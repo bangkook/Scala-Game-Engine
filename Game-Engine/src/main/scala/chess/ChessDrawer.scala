@@ -1,15 +1,15 @@
 package chess
 
+import game_engine.Drawer
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.Label
 import scalafx.scene.layout._
 import scalafx.scene.paint.Color
 import scalafx.scene.text.{Font, FontWeight}
 
-object ChessDrawer {
-  def draw(board: ChessBoard): GridPane = {
+object ChessDrawer extends Drawer[ChessBoard] {
+  override def draw(board: ChessBoard): GridPane = {
     val grid = new GridPane()
-
     grid.padding = Insets(0, 10, 10, 5)
 
     var white: Boolean = false

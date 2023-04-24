@@ -1,4 +1,5 @@
-import chess.ChessBoard
+package game_engine
+
 import javafx.event.ActionEvent
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label, TextField}
@@ -21,8 +22,7 @@ class GameEngine() {
   val sudoku: (String, Int) = ("Sudoku", 3)
   val chess: (String, Int) = ("Chess", 4)
 
-  def play(controller: (ChessBoard, List[String], Boolean) => Boolean, drawer: ChessBoard => GridPane, game: String): Unit = {
-    var board = new ChessBoard
+  def play[U](controller: (U, List[String], Boolean) => Boolean, drawer: U => GridPane, game: String, board: U): Unit = {
     var player = true
     val stage = new Stage()
     stage.title = game

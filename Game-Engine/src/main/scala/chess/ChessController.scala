@@ -1,6 +1,8 @@
 package chess
 
-object ChessConroller {
+import game_engine.Controller
+
+object ChessController extends Controller[ChessBoard] {
   def control(state: ChessBoard, move: List[String], turn: Boolean): Boolean = {
     var color: String = if (turn) "white" else "black"
 

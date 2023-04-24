@@ -1,4 +1,5 @@
-import chess.{ChessConroller, ChessDrawer}
+import chess.{ChessBoard, ChessController, ChessDrawer}
+import game_engine.GameEngine
 import scalafx.Includes._
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent
@@ -8,6 +9,7 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Font
+import tic_tac_toe.{XOBoard, XOController, XODrawer}
 
 
 object InitialScreen extends JFXApp3 {
@@ -39,7 +41,7 @@ object InitialScreen extends JFXApp3 {
         tic_tac_toe.setGraphic(imageView1)
 
         tic_tac_toe.onAction = (event: ActionEvent) => {
-          //gameEngine.play((new XOController).control, (new XODrawer).draw, "Tic-Tac-Toe")
+          gameEngine.play[XOBoard]((new XOController).control, (new XODrawer).draw, "Tic-Tac-Toe", new XOBoard)
         }
 
         // Chess
@@ -56,7 +58,7 @@ object InitialScreen extends JFXApp3 {
 
         chess.onAction = (event: ActionEvent) => {
           //content = ChessDrawer.draw(new ChessBoard)
-          gameEngine.play(ChessConroller.control, ChessDrawer.draw, "Chess")
+          gameEngine.play[ChessBoard](ChessController.control, ChessDrawer.draw, "Chess", new ChessBoard)
         }
 
         // Connect 4
