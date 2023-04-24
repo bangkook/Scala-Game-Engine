@@ -8,7 +8,7 @@ class XOController {
     val x: Int = move.head(0) - '1'
     val y: Int = move.head(1) - 'a'
 
-    if (!state.validMove(x, y)) {
+    if (!state.validMove(x, y) || state.board(x)(y) != null) {
       return false
     }
 

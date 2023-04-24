@@ -5,7 +5,7 @@ class XOBoard {
   var board: Array[Array[XOPiece]] = Array.ofDim[XOPiece](size, size)
 
   def validMove(x: Int, y: Int): Boolean = {
-    x >= 0 && x <= 2 && y >= 0 && y <= 2 && board(x)(y) == null
+    x >= 0 && x <= 2 && y >= 0 && y <= 2
   }
 
   def addMove(x: Int, y: Int, player: Boolean): Array[Array[XOPiece]] = {

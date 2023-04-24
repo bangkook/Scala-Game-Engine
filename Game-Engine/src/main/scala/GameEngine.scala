@@ -1,3 +1,4 @@
+import chess.ChessBoard
 import javafx.event.ActionEvent
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label, TextField}
@@ -6,7 +7,6 @@ import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color.LightGreen
 import scalafx.scene.text.Font
 import scalafx.stage.Stage
-import tic_tac_toe.XOBoard
 
 // TODO : check single or double
 // TODO: handle null input
@@ -21,8 +21,8 @@ class GameEngine() {
   val sudoku: (String, Int) = ("Sudoku", 3)
   val chess: (String, Int) = ("Chess", 4)
 
-  def play(controller: (XOBoard, List[String], Boolean) => Boolean, drawer: XOBoard => GridPane, game: String): Unit = {
-    var board = new XOBoard
+  def play(controller: (ChessBoard, List[String], Boolean) => Boolean, drawer: ChessBoard => GridPane, game: String): Unit = {
+    var board = new ChessBoard
     var player = true
     val stage = new Stage()
     stage.title = game
