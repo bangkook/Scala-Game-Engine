@@ -6,11 +6,11 @@ import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color.LightGreen
 import scalafx.scene.text.Font
 import scalafx.stage.Stage
+import tic_tac_toe.XOBoard
 
 // TODO : check single or double
 // TODO: handle null input
 // TODO : think of another way to handle game details
-// TODO : Add label to each text field and adjust their positions
 
 class GameEngine() {
   // Each game has name and number of input fields
@@ -21,7 +21,7 @@ class GameEngine() {
   val sudoku: (String, Int) = ("Sudoku", 3)
   val chess: (String, Int) = ("Chess", 4)
 
-  def play(controller: (XOBoard, List[Int], Boolean) => Boolean, drawer: XOBoard => GridPane, game: String): Unit = {
+  def play(controller: (XOBoard, List[String], Boolean) => Boolean, drawer: XOBoard => GridPane, game: String): Unit = {
     var board = new XOBoard
     var player = true
     val stage = new Stage()
@@ -30,113 +30,119 @@ class GameEngine() {
       fill = LightGreen
 
       val turn: Label = new Label(if (player) "Player1's turn" else "Player2's turn")
-      turn.layoutX = 450
-      turn.layoutY = 50
+      turn.layoutX = 460
+      turn.layoutY = 10
       turn.setFont(new Font(20))
       turn.setTextFill(Color.Red)
 
-      var inputFields: List[TextField] = List()
-
+      var inputFields: (List[TextField], List[Label]) = (List(), List())
       game match {
         case connect._1 => inputFields = oneInputHandler()
-        case queens._1 => inputFields = twoInputHandler()
-        case tic_tac_toe._1 => inputFields = twoInputHandler()
-        case sudoku._1 => inputFields = threeInputHandler()
-        case chess._1 => inputFields = fourInputHandler()
-        case checkers._1 => inputFields = fourInputHandler()
+        case queens._1 => inputFields = oneInputHandler()
+        case tic_tac_toe._1 => inputFields = oneInputHandler()
+        case sudoku._1 => inputFields = sudokuInputHandler()
+        case chess._1 => inputFields = twoInputHandler()
+        case checkers._1 => inputFields = twoInputHandler()
       }
 
       val playButton: Button = new Button("Play")
-      playButton.layoutX = 510
+      playButton.layoutX = 475
       playButton.layoutY = 300
+      playButton.setFont(new Font(18))
+      playButton.setMinSize(100, 50)
       playButton.background = new Background(Array(new BackgroundFill(Color.Cyan, null, null)))
       playButton.onAction = (event: ActionEvent) => {
-        var input: List[Int] = List()
-        for (textField <- inputFields)
-          input = textField.getText.toInt :: input
+        var input: List[String] = List()
+        for (textField <- inputFields._1)
+          input = textField.getText :: input
 
         if (controller(board, input, player))
           player = !player
         turn.setText(if (player) "Player1's turn" else "Player2's turn")
         content = List(drawer(board), turn, playButton)
-        for (textField <- inputFields)
+        for (textField <- inputFields._1) {
+          textField.clear()
           content.add(textField)
+        }
+        for (label <- inputFields._2)
+          content.add(label)
       }
 
       content = List(drawer(board), turn, playButton)
-      for (textField <- inputFields)
+      for (textField <- inputFields._1) {
+        textField.clear()
         content.add(textField)
-      //controller()
-
+      }
+      for (textField <- inputFields._2)
+        content.add(textField)
     }
     stage.show()
-
   }
 
-  def oneInputHandler(): List[TextField] = {
+  def oneInputHandler(): (List[TextField], List[Label]) = {
+    val label = new Label("Cell")
+    label.layoutX = 470
+    label.layoutY = 100
+    label.setFont(new Font(16))
     val textFieldX: TextField = new TextField
     textFieldX.layoutX = 500
     textFieldX.layoutY = 100
     textFieldX.setMaxSize(50, 50)
+    textFieldX.setPromptText("e.g. 1a")
 
-    List(textFieldX)
+    (List(textFieldX), List(label))
   }
 
-  def twoInputHandler(): List[TextField] = {
-    val textFieldX: TextField = new TextField
-    textFieldX.layoutX = 500
-    textFieldX.layoutY = 100
-    textFieldX.setMaxSize(50, 50)
+  def sudokuInputHandler(): (List[TextField], List[Label]) = {
+    val labelPos = new Label("Cell")
+    labelPos.layoutX = 470
+    labelPos.layoutY = 100
+    labelPos.setFont(new Font(16))
 
-    val textFieldY: TextField = new TextField
-    textFieldY.layoutX = 500
-    textFieldY.layoutY = 200
-    textFieldY.setMaxSize(50, 50)
+    val textFieldPos: TextField = new TextField
+    textFieldPos.layoutX = 500
+    textFieldPos.layoutY = 100
+    textFieldPos.setMaxSize(50, 50)
+    textFieldPos.setPromptText("e.g. 1a")
 
-    List(textFieldX, textFieldY)
-  }
-
-  def threeInputHandler(): List[TextField] = {
-    val textFieldX: TextField = new TextField
-    textFieldX.layoutX = 500
-    textFieldX.layoutY = 100
-    textFieldX.setMaxSize(50, 50)
-
-    val textFieldY: TextField = new TextField
-    textFieldY.layoutX = 500
-    textFieldY.layoutY = 200
-    textFieldY.setMaxSize(50, 50)
+    val labelVal = new Label("Value")
+    labelVal.layoutX = 460
+    labelVal.layoutY = 200
+    labelVal.setFont(new Font(16))
 
     val textFieldVal: TextField = new TextField
     textFieldVal.layoutX = 500
     textFieldVal.layoutY = 200
     textFieldVal.setMaxSize(50, 50)
+    textFieldVal.setPromptText("1:9")
 
-    List(textFieldX, textFieldY, textFieldVal)
+    (List(textFieldPos, textFieldVal), List(labelPos, labelVal))
   }
 
-  def fourInputHandler(): List[TextField] = {
-    val textFieldFromX: TextField = new TextField
-    textFieldFromX.layoutX = 500
-    textFieldFromX.layoutY = 100
-    textFieldFromX.setMaxSize(50, 50)
+  def twoInputHandler(): (List[TextField], List[Label]) = {
+    val labelFrom: Label = new Label("From")
+    labelFrom.layoutX = 460
+    labelFrom.layoutY = 100
+    labelFrom.setFont(new Font(16))
 
-    val textFieldFromY: TextField = new TextField
-    textFieldFromY.layoutX = 500
-    textFieldFromY.layoutY = 200
-    textFieldFromY.setMaxSize(50, 50)
+    val textFieldFrom: TextField = new TextField
+    textFieldFrom.layoutX = 500
+    textFieldFrom.layoutY = 100
+    textFieldFrom.setMaxSize(50, 50)
+    textFieldFrom.setPromptText("e.g. 1a")
 
-    val textFieldToX: TextField = new TextField
-    textFieldToX.layoutX = 500
-    textFieldToX.layoutY = 200
-    textFieldToX.setMaxSize(50, 50)
+    val labelTo: Label = new Label("To")
+    labelTo.layoutX = 470
+    labelTo.layoutY = 200
+    labelTo.setFont(new Font(16))
 
-    val textFieldToY: TextField = new TextField
-    textFieldToY.layoutX = 500
-    textFieldToY.layoutY = 200
-    textFieldToY.setMaxSize(50, 50)
+    val textFieldTo: TextField = new TextField
+    textFieldTo.layoutX = 500
+    textFieldTo.layoutY = 200
+    textFieldTo.setMaxSize(50, 50)
+    textFieldTo.setPromptText("e.g. 2a")
 
-    List(textFieldFromX, textFieldFromY, textFieldToX, textFieldToY)
+    (List(textFieldFrom, textFieldTo), List(labelFrom, labelTo))
   }
 
 }

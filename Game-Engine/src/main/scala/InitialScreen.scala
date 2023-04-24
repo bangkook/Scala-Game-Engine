@@ -7,6 +7,7 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Font
+import tic_tac_toe.{XOController, XODrawer}
 
 
 object InitialScreen extends JFXApp3 {
@@ -26,7 +27,7 @@ object InitialScreen extends JFXApp3 {
         label.setTextFill(Color.Brown)
 
         // Tic-Tac-Toe
-        val image1 = new Image("file:src/tic-tac-toe.png")
+        val image1 = new Image("file:images/tic-tac-toe.png")
         val imageView1 = new ImageView(image1)
         imageView1.setFitWidth(100)
         imageView1.setFitHeight(100)
@@ -42,7 +43,7 @@ object InitialScreen extends JFXApp3 {
         }
 
         // Chess
-        val image2 = new Image("file:src/chess.png")
+        val image2 = new Image("file:images/chess.png")
         val imageView2 = new ImageView(image2)
         imageView2.setFitWidth(100)
         imageView2.setFitHeight(100)
@@ -58,7 +59,7 @@ object InitialScreen extends JFXApp3 {
         }
 
         // Connect 4
-        val image3 = new Image("file:src/connect.png")
+        val image3 = new Image("file:images/connect.png")
         val imageView3 = new ImageView(image3)
         imageView3.setFitWidth(100)
         imageView3.setFitHeight(100)
@@ -74,7 +75,7 @@ object InitialScreen extends JFXApp3 {
         }
 
         // Checkers
-        val image4 = new Image("file:src/checker.png")
+        val image4 = new Image("file:images/checker.png")
         val imageView4 = new ImageView(image4)
         imageView4.setFitWidth(100)
         imageView4.setFitHeight(100)
@@ -90,7 +91,7 @@ object InitialScreen extends JFXApp3 {
         }
 
         // Sudoku
-        val image5 = new Image("file:src/sudoku.png")
+        val image5 = new Image("file:images/sudoku.png")
         val imageView5 = new ImageView(image5)
         imageView5.setFitWidth(100)
         imageView5.setFitHeight(100)
@@ -106,7 +107,7 @@ object InitialScreen extends JFXApp3 {
         }
 
         // 8-Queens
-        val image6 = new Image("file:src/queens.png")
+        val image6 = new Image("file:images/queens.png")
         val imageView6 = new ImageView(image6)
         imageView6.setFitWidth(100)
         imageView6.setFitHeight(100)
