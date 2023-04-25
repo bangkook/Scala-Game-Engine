@@ -22,9 +22,8 @@ class ChessBoard {
   }
 
   def addMove(from: (Int, Int), to: (Int, Int)): Array[Array[ChessPiece]] = {
-    //board(to._2)(to._1) = board(from._2)(from._1)
-    board(from._2)(from._1) = board(to._2)(to._1)
-    board(to._2)(to._1) = null
+    board(to._2)(to._1) = board(from._2)(from._1)
+    board(from._2)(from._1) = null
     board
   }
 
