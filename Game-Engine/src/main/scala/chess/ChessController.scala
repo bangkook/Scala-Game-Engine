@@ -10,10 +10,7 @@ object ChessController extends Controller[ChessBoard] {
     val y1: Int = move(1)(1) - 'a'
     val x2: Int = state.size - (move.head(0) - '1') - 1
     val y2: Int = move.head(1) - 'a'
-    println(x1)
-    println(y1)
-    println(x2)
-    println(y2)
+
     // If out of bounds or cell is empty, return false
     if (!state.validMove((x1, y1), (x2, y2)) || state.board(y1)(x1) == null) {
       return false
@@ -102,19 +99,21 @@ object ChessController extends Controller[ChessBoard] {
 
   private def checkPawn(board: Array[Array[ChessPiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
     // White pawn
-    if (board(x1)(x2).color == "white") {
-      if (x1 < x2) return false // Motion should be upward
+    if (board(y1)(x1).color == "white") {
       // 2 steps
       if (x1 - x2 == 2)
         return x1 == 6 // Starting position should be second row from bottom
+
+      if (x1 < x2 || x1 - x2 > 1) return false // Motion should be one cell upward
     }
 
     // Black pawn
-    if (board(x1)(x2).color == "black") {
-      if (x1 > x2) return false // Motion should be downward
+    if (board(y1)(x1).color == "black") {
       // 2 steps
       if (x2 - x1 == 2)
         return x1 == 1 // Starting position should be second row from bottom
+
+      if (x1 > x2 || x2 - x1 > 1) return false // Motion should be one cell downward
     }
 
     // If diagonal and killing move
@@ -122,7 +121,7 @@ object ChessController extends Controller[ChessBoard] {
       return board(y1)(x1) != null && board(y2)(x2) != null
     }
 
-    true
+    y1 == y2 // Straight motion in the same column
   }
 
 }
