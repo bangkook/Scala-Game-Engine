@@ -89,25 +89,18 @@ object SudokuGenerator {
     }
   }
 
-  def getSudoku(board: Array[Array[Int]]): Array[Array[Int]] = {
+  def getSudoku(board: Array[Array[Int]]){
     generate(0, possibleNumbers(0))
     removeKDigits()
-    //    for (i <- 0 until 81) {
-    //      print(puzzle(i) + "  ")
-    //      if (i % 9 == 8) println("")
-    //    }
-    //    println("")
-
     var c = 0
     for (x <- 0 until board.size) {
       for (y <- 0 until board.size) {
         board(x)(y) = puzzle(c)
         c = c + 1
-//                print(board(x)(y) + "  ")
+        //                print(board(x)(y) + "  ")
       }
-//            println("")
+      //            println("")
     }
-    board
   }
 
 }
