@@ -1,4 +1,5 @@
 import chess.{ChessBoard, ChessController, ChessDrawer}
+import constants.Constants
 import game_engine.GameEngine
 import scalafx.Includes._
 import scalafx.application.JFXApp3
@@ -9,6 +10,7 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Font
+import sudoku.{SudokuBoard, SudokuController, SudokuDrawer}
 import tic_tac_toe.{XOBoard, XOController, XODrawer}
 
 
@@ -41,7 +43,7 @@ object InitialScreen extends JFXApp3 {
         tic_tac_toe.setGraphic(imageView1)
 
         tic_tac_toe.onAction = (event: ActionEvent) => {
-          gameEngine.play[XOBoard]((new XOController).control, (new XODrawer).draw, "Tic-Tac-Toe", new XOBoard)
+          gameEngine.play[XOBoard](XOController.control, XODrawer.draw, Constants.tic_tac_toe, new XOBoard)
         }
 
         // Chess
@@ -58,7 +60,7 @@ object InitialScreen extends JFXApp3 {
 
         chess.onAction = (event: ActionEvent) => {
           //content = ChessDrawer.draw(new ChessBoard)
-          gameEngine.play[ChessBoard](ChessController.control, ChessDrawer.draw, "Chess", new ChessBoard)
+          gameEngine.play[ChessBoard](ChessController.control, ChessDrawer.draw, Constants.chess, new ChessBoard)
         }
 
         // Connect 4
@@ -106,7 +108,7 @@ object InitialScreen extends JFXApp3 {
         sudoku.setGraphic(imageView5)
 
         sudoku.onAction = (event: ActionEvent) => {
-          println("Sudoku")
+          gameEngine.play[SudokuBoard](SudokuController.control, SudokuDrawer.draw, Constants.sudoku, new SudokuBoard)
         }
 
         // 8-Queens
