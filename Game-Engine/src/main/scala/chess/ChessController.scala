@@ -6,10 +6,14 @@ object ChessController extends Controller[ChessBoard] {
   def control(state: ChessBoard, move: List[String], turn: Boolean): Boolean = {
     val color: String = if (turn) "white" else "black"
 
-    val x1: Int = state.size - (move(1)(0) - '1') - 1
-    val y1: Int = move(1)(1) - 'a'
-    val x2: Int = state.size - (move.head(0) - '1') - 1
-    val y2: Int = move.head(1) - 'a'
+    // Wrong input format
+    if (move.head.length != 2 || move(1).length != 2)
+      return false
+
+    val x1: Int = state.size - (move.head(0) - '1') - 1
+    val y1: Int = move.head(1) - 'a'
+    val x2: Int = state.size - (move(1)(0) - '1') - 1
+    val y2: Int = move(1)(1) - 'a'
 
     // If out of bounds or cell is empty, return false
     if (!state.validMove((x1, y1), (x2, y2)) || state.board(y1)(x1) == null) {
