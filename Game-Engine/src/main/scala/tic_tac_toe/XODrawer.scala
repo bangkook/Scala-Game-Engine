@@ -5,7 +5,7 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.layout._
 import scalafx.scene.paint.Color
 
-class XODrawer extends Drawer[XOBoard] {
+object XODrawer extends Drawer[XOBoard] {
   def draw(board: XOBoard): GridPane = {
     val grid = new GridPane()
 

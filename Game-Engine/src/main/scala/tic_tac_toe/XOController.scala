@@ -2,7 +2,7 @@ package tic_tac_toe
 
 import game_engine.Controller
 
-class XOController extends Controller[XOBoard] {
+object XOController extends Controller[XOBoard] {
   def control(state: XOBoard, move: List[String], turn: Boolean): Boolean = {
     if (move.head.length != 2)
       return false
