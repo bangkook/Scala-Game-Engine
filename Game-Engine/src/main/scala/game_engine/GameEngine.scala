@@ -1,26 +1,19 @@
 package game_engine
 
+import constants.Constants
 import javafx.event.ActionEvent
 import scalafx.scene.Scene
-import scalafx.scene.control.{Button, Label, TextField}
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.{Alert, Button, Label, TextField}
 import scalafx.scene.layout.{Background, BackgroundFill, GridPane}
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color.LightGreen
 import scalafx.scene.text.Font
 import scalafx.stage.Stage
 
-// TODO : check single or double
-// TODO: handle null input
-// TODO : think of another way to handle game details
-
 class GameEngine() {
-  // Each game has name and number of input fields
-  val tic_tac_toe: (String, Int) = ("Tic-Tac-Toe", 2)
-  val checkers: (String, Int) = ("Checkers", 4)
-  val connect: (String, Int) = ("Connect-4", 1)
-  val queens: (String, Int) = ("8-Queens", 2)
-  val sudoku: (String, Int) = ("Sudoku", 3)
-  val chess: (String, Int) = ("Chess", 4)
+  // Used to append to list when certain condition is met
+  @inline def cond[T](p: => Boolean, v: T): List[T] = if (p) v :: Nil else Nil
 
   def play[U](controller: (U, List[String], Boolean) => Boolean, drawer: U => GridPane, game: String, board: U): Unit = {
     var player = true
@@ -35,14 +28,13 @@ class GameEngine() {
       turn.setFont(new Font(20))
       turn.setTextFill(Color.Red)
 
-      var inputFields: (List[TextField], List[Label]) = (List(), List())
-      game match {
-        case connect._1 => inputFields = oneInputHandler()
-        case queens._1 => inputFields = oneInputHandler()
-        case tic_tac_toe._1 => inputFields = oneInputHandler()
-        case sudoku._1 => inputFields = sudokuInputHandler()
-        case chess._1 => inputFields = twoInputHandler()
-        case checkers._1 => inputFields = twoInputHandler()
+      val inputHandler: (List[TextField], List[Label]) = game match {
+        case Constants.connect => oneInputHandler
+        case Constants.queens => oneInputHandler
+        case Constants.tic_tac_toe => oneInputHandler
+        case Constants.sudoku => sudokuInputHandler
+        case Constants.chess => twoInputHandler
+        case Constants.checkers => twoInputHandler
       }
 
       val playButton: Button = new Button("Play")
@@ -51,35 +43,44 @@ class GameEngine() {
       playButton.setFont(new Font(18))
       playButton.setMinSize(100, 50)
       playButton.background = new Background(Array(new BackgroundFill(Color.Cyan, null, null)))
-      playButton.onAction = (event: ActionEvent) => {
-        var input: List[String] = List()
-        for (textField <- inputFields._1)
-          input = textField.getText :: input
+      playButton.onAction = (_: ActionEvent) => {
+        val input = inputHandler._1.map(x => x.getText)
+        val alert = new Alert(AlertType.None)
 
-        if (controller(board, input, player))
-          player = !player
-        turn.setText(if (player) "Player1's turn" else "Player2's turn")
-        content = List(drawer(board), turn, playButton)
-        for (textField <- inputFields._1) {
-          textField.clear()
-          content.add(textField)
+        if (controller(board, input, player)) {
+          // Switch players in double games
+          if (isDouble(game))
+            player = !player
+        } else {
+          // Alert the user that the input was not valid
+          alert.setAlertType(AlertType.Error)
+          alert.setContentText("Invalid Input")
+          alert.show()
         }
-        for (label <- inputFields._2)
-          content.add(label)
+
+        turn.setText(if (player) "Player 1's turn" else "Player 2's turn")
+
+        // Clear text fields
+        inputHandler._1.foreach(x => x.clear())
+        content = List(drawer(board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
       }
 
-      content = List(drawer(board), turn, playButton)
-      for (textField <- inputFields._1) {
-        textField.clear()
-        content.add(textField)
-      }
-      for (textField <- inputFields._2)
-        content.add(textField)
+      // Clear text fields
+      inputHandler._1.foreach(x => x.clear())
+      content = List(drawer(board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
     }
     stage.show()
   }
 
-  def oneInputHandler(): (List[TextField], List[Label]) = {
+  def isDouble(game: String): Boolean = {
+    game match {
+      case Constants.sudoku => false
+      case Constants.queens => false
+      case _ => true
+    }
+  }
+
+  def oneInputHandler: (List[TextField], List[Label]) = {
     val label = new Label("Cell")
     label.layoutX = 470
     label.layoutY = 100
@@ -93,7 +94,7 @@ class GameEngine() {
     (List(textFieldX), List(label))
   }
 
-  def sudokuInputHandler(): (List[TextField], List[Label]) = {
+  def sudokuInputHandler: (List[TextField], List[Label]) = {
     val labelPos = new Label("Cell")
     labelPos.layoutX = 470
     labelPos.layoutY = 100
@@ -119,7 +120,7 @@ class GameEngine() {
     (List(textFieldPos, textFieldVal), List(labelPos, labelVal))
   }
 
-  def twoInputHandler(): (List[TextField], List[Label]) = {
+  def twoInputHandler: (List[TextField], List[Label]) = {
     val labelFrom: Label = new Label("From")
     labelFrom.layoutX = 460
     labelFrom.layoutY = 100
