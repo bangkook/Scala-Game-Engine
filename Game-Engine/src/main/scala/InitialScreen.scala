@@ -12,7 +12,7 @@ import scalafx.scene.paint.Color._
 import scalafx.scene.text.Font
 import sudoku.{SudokuBoard, SudokuController, SudokuDrawer}
 import tic_tac_toe.{XOBoard, XOController, XODrawer}
-
+import checkers.{CheckersBoard, CheckersController, CheckersDrawer}
 
 object InitialScreen extends JFXApp3 {
   override def start(): Unit = {
@@ -93,6 +93,7 @@ object InitialScreen extends JFXApp3 {
 
         checkers.onAction = (event: ActionEvent) => {
           println("CHECKERS")
+          gameEngine.play[CheckersBoard](CheckersController.control, CheckersDrawer.draw, Constants.checkers, new CheckersBoard)
         }
 
         // Sudoku
