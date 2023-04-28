@@ -22,13 +22,13 @@ object InitialScreen extends JFXApp3 {
       width = 650
       height = 450
       scene = new Scene {
-        fill = DarkSlateGray
+        fill = LightGreen
 
         val label = new Label("Game Engineeto")
         label.setFont(new Font(30))
         label.layoutX = 200
         label.layoutY = 10
-        label.setTextFill(Color.Orange)
+        label.setTextFill(Color.Brown)
 
         // Tic-Tac-Toe
         val image1 = new Image("file:images/tic-tac-toe.png")

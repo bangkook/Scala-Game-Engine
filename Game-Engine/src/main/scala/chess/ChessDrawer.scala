@@ -14,7 +14,7 @@ object ChessDrawer extends Drawer[ChessBoard] {
 
     var white: Boolean = false
     val whiteBackground = new Background(Array(new BackgroundFill(Color.White, null, null)))
-    val blackBackground = new Background(Array(new BackgroundFill(Color.Brown, null, null)))
+    val blackBackground = new Background(Array(new BackgroundFill(Color.Grey, null, null)))
 
     for (x <- 0 until board.size + 1) {
       val col = ('a' + x - 1).toChar.toString

@@ -7,7 +7,7 @@ import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.{Alert, Button, Label, TextField}
 import scalafx.scene.layout.{Background, BackgroundFill, GridPane}
 import scalafx.scene.paint.Color
-import scalafx.scene.paint.Color.LightGreen
+import scalafx.scene.paint.Color.DarkOliveGreen
 import scalafx.scene.text.Font
 import scalafx.stage.Stage
 
@@ -20,13 +20,13 @@ class GameEngine() {
     val stage = new Stage()
     stage.title = game
     stage.scene = new Scene(600, 450) {
-      fill = LightGreen
+      fill = DarkOliveGreen
 
       val turn: Label = new Label(if (player) "Player 1's turn" else "Player 2's turn")
       turn.layoutX = 460
       turn.layoutY = 10
       turn.setFont(new Font(20))
-      turn.setTextFill(Color.Red)
+      turn.setTextFill(Color.Orange)
 
       val inputHandler: (List[TextField], List[Label]) = game match {
         case Constants.connect => oneInputHandler
@@ -43,9 +43,13 @@ class GameEngine() {
       playButton.setFont(new Font(18))
       playButton.setMinSize(100, 50)
       playButton.background = new Background(Array(new BackgroundFill(Color.Cyan, null, null)))
+
+      content = List(drawer(board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
+
+      // Game loop
       playButton.onAction = (_: ActionEvent) => {
         val input = inputHandler._1.map(x => x.getText)
-        val alert = new Alert(AlertType.None)
+        val alert = new Alert(AlertType.Error)
 
         if (controller(board, input, player)) {
           // Switch players in double games
@@ -53,7 +57,6 @@ class GameEngine() {
             player = !player
         } else {
           // Alert the user that the input was not valid
-          alert.setAlertType(AlertType.Error)
           alert.setContentText("Invalid Input")
           alert.show()
         }
@@ -64,10 +67,6 @@ class GameEngine() {
         inputHandler._1.foreach(x => x.clear())
         content = List(drawer(board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
       }
-
-      // Clear text fields
-      inputHandler._1.foreach(x => x.clear())
-      content = List(drawer(board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
     }
     stage.show()
   }
