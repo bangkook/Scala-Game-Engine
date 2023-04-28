@@ -22,7 +22,7 @@ class GameEngine() {
     stage.scene = new Scene(600, 450) {
       fill = LightGreen
 
-      val turn: Label = new Label(if (player) "Player1's turn" else "Player2's turn")
+      val turn: Label = new Label(if (player) "Player 1's turn" else "Player 2's turn")
       turn.layoutX = 460
       turn.layoutY = 10
       turn.setFont(new Font(20))
