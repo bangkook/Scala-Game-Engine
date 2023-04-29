@@ -1,6 +1,6 @@
-import chess.{ChessBoard, ChessController, ChessDrawer}
+import chess.{ChessBoard, ChessController, ChessDrawer, ChessPiece}
 import constants.Constants
-import game_engine.GameEngine
+import game_engine.{GameEngine, GameState}
 import scalafx.Includes._
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent
@@ -10,13 +10,10 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Font
-import sudoku.{SudokuBoard, SudokuController, SudokuDrawer}
-import tic_tac_toe.{XOBoard, XOController, XODrawer}
-import checkers.{CheckersBoard, CheckersController, CheckersDrawer}
+import tic_tac_toe.{XOBoard, XOController, XODrawer, XOPiece}
 
 object InitialScreen extends JFXApp3 {
   override def start(): Unit = {
-    val gameEngine = new GameEngine
     stage = new JFXApp3.PrimaryStage {
       title.value = "Game Engine"
       width = 650
@@ -43,7 +40,9 @@ object InitialScreen extends JFXApp3 {
         tic_tac_toe.setGraphic(imageView1)
 
         tic_tac_toe.onAction = (event: ActionEvent) => {
-          gameEngine.play[XOBoard](XOController.control, XODrawer.draw, Constants.tic_tac_toe, new XOBoard)
+          val gameState: GameState[XOBoard] = GameState(player = true, new XOBoard(Array.ofDim[XOPiece](3, 3)))
+          new GameEngine
+            [XOBoard](XOController.control, XODrawer.draw, Constants.tic_tac_toe, gameState)
         }
 
         // Chess
@@ -59,8 +58,9 @@ object InitialScreen extends JFXApp3 {
         chess.setGraphic(imageView2)
 
         chess.onAction = (event: ActionEvent) => {
-          //content = ChessDrawer.draw(new ChessBoard)
-          gameEngine.play[ChessBoard](ChessController.control, ChessDrawer.draw, Constants.chess, new ChessBoard)
+          val gameState: GameState[ChessBoard] = GameState(player = true, new ChessBoard(Array.ofDim[ChessPiece](8, 8)))
+          new GameEngine
+            [ChessBoard](ChessController.control, ChessDrawer.draw, Constants.chess, gameState)
         }
 
         // Connect 4
@@ -93,7 +93,7 @@ object InitialScreen extends JFXApp3 {
 
         checkers.onAction = (event: ActionEvent) => {
           println("CHECKERS")
-          gameEngine.play[CheckersBoard](CheckersController.control, CheckersDrawer.draw, Constants.checkers, new CheckersBoard)
+          //gameEngine.play[CheckersBoard](CheckersController.control, CheckersDrawer.draw, Constants.checkers, new CheckersBoard)
         }
 
         // Sudoku
@@ -109,7 +109,7 @@ object InitialScreen extends JFXApp3 {
         sudoku.setGraphic(imageView5)
 
         sudoku.onAction = (event: ActionEvent) => {
-          gameEngine.play[SudokuBoard](SudokuController.control, SudokuDrawer.draw, Constants.sudoku, new SudokuBoard)
+          //  gameEngine.play[SudokuBoard](SudokuController.control, SudokuDrawer.draw, Constants.sudoku, new SudokuBoard)
         }
 
         // 8-Queens

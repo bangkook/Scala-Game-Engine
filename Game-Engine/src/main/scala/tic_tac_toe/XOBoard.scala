@@ -1,16 +1,25 @@
 package tic_tac_toe
 
-class XOBoard {
-  val size = 3
-  var board: Array[Array[XOPiece]] = Array.ofDim[XOPiece](size, size)
+class XOBoard(board: Array[Array[XOPiece]]) {
+  // val size = 3
+  val size: Int = {
+    board.length
+  }
 
   def validMove(x: Int, y: Int): Boolean = {
     x >= 0 && x < size && y >= 0 && y < size
   }
 
-  def addMove(x: Int, y: Int, player: Boolean): Array[Array[XOPiece]] = {
-    board(y)(x) = new XOPiece(player)
-    board
+  def get(x: Int, y: Int): XOPiece = {
+    board(x)(y)
+  }
+
+  def addMove(row: Int, col: Int, player: Boolean): Array[Array[XOPiece]] = {
+    val newBoard = Array.tabulate(size, size)((x, y) =>
+      if (x == col && y == row) new XOPiece(player)
+      else this.get(x, y))
+
+    newBoard
   }
 
 }

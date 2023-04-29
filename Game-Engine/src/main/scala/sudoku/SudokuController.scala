@@ -1,9 +1,7 @@
 package sudoku
 
-import game_engine.Controller
-
-object SudokuController extends Controller[SudokuBoard] {
-  override def control(state: SudokuBoard, move: List[String], turn: Boolean): Boolean = {
+object SudokuController /* extends Controller[SudokuBoard] */ {
+  def control(state: SudokuBoard, move: List[String], turn: Boolean): Boolean = {
     val x: Int = move.head(0) - '1'
     val y: Int = move.head(1) - 'a'
     val z: Int = if (move(1) != "") move(1)(0) - '0' else -1
@@ -22,13 +20,13 @@ object SudokuController extends Controller[SudokuBoard] {
         return false
       }
       println("before add move")
-      state.board = state.addMove(x, y, z);
+      //  state.board = state.addMove(x, y, z);
     } else { // delete
       if (!state.validDelete(x, y)) {
         println("can't delete this")
         return false
       }
-      state.board = state.removeMove(x, y);
+      //state.board = state.removeMove(x, y);
     }
 
     true

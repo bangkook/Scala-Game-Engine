@@ -1,12 +1,11 @@
 package sudoku
 
-class SudokuBoard {
+class SudokuBoard(initialBoard: Array[Array[Int]]) {
   val size = 9
-  var board: Array[Array[Int]] = Array.ofDim[Int](size, size)
-  val initialBoard: Array[Array[Int]] = Array.ofDim[Int](size, size)
   //initial
   SudokuGenerator.getSudoku(initialBoard)
-  board = initialBoard.map(_.clone)
+
+  val board: Array[Array[Int]] = initialBoard.map(_.clone)
 
   def validPlace(x: Int, y: Int): Boolean = {
     println("x " + x + " y " + y)

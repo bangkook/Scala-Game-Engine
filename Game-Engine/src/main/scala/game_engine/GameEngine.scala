@@ -11,18 +11,24 @@ import scalafx.scene.paint.Color.DarkOliveGreen
 import scalafx.scene.text.Font
 import scalafx.stage.Stage
 
-class GameEngine() {
+case class GameState[U](
+                         player: Boolean,
+                         board: U
+                       )
+
+class GameEngine[U](controller: (U, List[String], Boolean) => U, drawer: U => GridPane, game: String, gameState: GameState[U]) {
+  play(controller, drawer, game, gameState, new Stage())
+
   // Used to append to list when certain condition is met
   @inline def cond[T](p: => Boolean, v: T): List[T] = if (p) v :: Nil else Nil
 
-  def play[U](controller: (U, List[String], Boolean) => Boolean, drawer: U => GridPane, game: String, board: U): Unit = {
-    var player = true
-    val stage = new Stage()
+  def play(controller: (U, List[String], Boolean) => U, drawer: U => GridPane, game: String, gameState: GameState[U], stage: Stage): Unit = {
     stage.title = game
+
     stage.scene = new Scene(600, 450) {
       fill = DarkOliveGreen
 
-      val turn: Label = new Label(if (player) "Player 1's turn" else "Player 2's turn")
+      val turn: Label = new Label(if (gameState.player) "Player 1's turn" else "Player 2's turn")
       turn.layoutX = 460
       turn.layoutY = 10
       turn.setFont(new Font(20))
@@ -44,28 +50,21 @@ class GameEngine() {
       playButton.setMinSize(100, 50)
       playButton.background = new Background(Array(new BackgroundFill(Color.Cyan, null, null)))
 
-      content = List(drawer(board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
+      content = List(drawer(gameState.board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
 
       // Game loop
       playButton.onAction = (_: ActionEvent) => {
         val input = inputHandler._1.map(x => x.getText)
         val alert = new Alert(AlertType.Error)
-
-        if (controller(board, input, player)) {
-          // Switch players in double games
-          if (isDouble(game))
-            player = !player
+        val newBoard = controller(gameState.board, input, gameState.player)
+        if (newBoard != gameState.board) {
+          val newGameState: GameState[U] = GameState(!gameState.player, newBoard)
+          play(controller, drawer, game, newGameState, stage)
         } else {
           // Alert the user that the input was not valid
           alert.setContentText("Invalid Input")
           alert.show()
         }
-
-        turn.setText(if (player) "Player 1's turn" else "Player 2's turn")
-
-        // Clear text fields
-        inputHandler._1.foreach(x => x.clear())
-        content = List(drawer(board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
       }
     }
     stage.show()
@@ -77,6 +76,10 @@ class GameEngine() {
       case Constants.queens => false
       case _ => true
     }
+  }
+
+  def switchPlayer(player: Boolean): Boolean = {
+    !player
   }
 
   def oneInputHandler: (List[TextField], List[Label]) = {
@@ -144,5 +147,4 @@ class GameEngine() {
 
     (List(textFieldFrom, textFieldTo), List(labelFrom, labelTo))
   }
-
 }
