@@ -68,10 +68,10 @@ object ChessDrawer extends Drawer[ChessBoard] {
           stack.setMinHeight(45)
           stack.setAlignment(Pos.Center)
           stack.setBackground(if (white) whiteBackground else blackBackground)
-          grid.add(stack, x + 1, y + 1)
+          grid.add(stack, y + 1, x + 1)
 
           if (board.get(x, y) != null)
-            grid.add(board.get(x, y).getImage, x + 1, y + 1)
+            grid.add(board.get(x, y).getImage, y + 1, x + 1)
 
           loop(x, y + 1, !white)
         }

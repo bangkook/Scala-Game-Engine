@@ -58,7 +58,8 @@ object InitialScreen extends JFXApp3 {
         chess.setGraphic(imageView2)
 
         chess.onAction = (event: ActionEvent) => {
-          val gameState: GameState[ChessBoard] = GameState(player = true, new ChessBoard(Array.ofDim[ChessPiece](8, 8)))
+          val chessBoard = new ChessBoard(Array.ofDim[ChessPiece](8, 8)).initializeAll
+          val gameState: GameState[ChessBoard] = GameState(player = true, chessBoard)
           new GameEngine
             [ChessBoard](ChessController.control, ChessDrawer.draw, Constants.chess, gameState)
         }

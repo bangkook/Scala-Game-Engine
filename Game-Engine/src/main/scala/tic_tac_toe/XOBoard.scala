@@ -16,7 +16,7 @@ class XOBoard(board: Array[Array[XOPiece]]) {
 
   def addMove(row: Int, col: Int, player: Boolean): Array[Array[XOPiece]] = {
     val newBoard = Array.tabulate(size, size)((x, y) =>
-      if (x == col && y == row) new XOPiece(player)
+      if (x == row && y == col) new XOPiece(player)
       else this.get(x, y))
 
     newBoard

@@ -69,10 +69,10 @@ object XODrawer extends Drawer[XOBoard] {
           stack.setAlignment(Pos.Center)
           stack.setBackground(new Background(Array(new BackgroundFill(Color.LightGray, null, null))))
 
-          grid.add(stack, x + 1, y + 1)
+          grid.add(stack, y + 1, x + 1)
 
           if (board.get(x, y) != null)
-            grid.add(board.get(x, y).getImage, x + 1, y + 1)
+            grid.add(board.get(x, y).getImage, y + 1, x + 1)
 
           loop(x, y + 1)
         }
