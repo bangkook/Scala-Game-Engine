@@ -1,6 +1,6 @@
-import chess.{ChessBoard, ChessController, ChessDrawer, ChessPiece}
+import chess.{ChessBoard, ChessPiece}
 import constants.Constants
-import game_engine.{GameEngine, GameState}
+import game_engine.{GameEngine, GamePiece, GameState}
 import scalafx.Includes._
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent
@@ -10,10 +10,12 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Font
-import tic_tac_toe.{XOBoard, XOController, XODrawer, XOPiece}
+import tic_tac_toe.{XOController, XODrawer}
 
 object InitialScreen extends JFXApp3 {
   override def start(): Unit = {
+    val gameEngine = new GameEngine
+
     stage = new JFXApp3.PrimaryStage {
       title.value = "Game Engine"
       width = 650
@@ -40,9 +42,8 @@ object InitialScreen extends JFXApp3 {
         tic_tac_toe.setGraphic(imageView1)
 
         tic_tac_toe.onAction = (event: ActionEvent) => {
-          val gameState: GameState[XOBoard] = GameState(player = true, new XOBoard(Array.ofDim[XOPiece](3, 3)))
-          new GameEngine
-            [XOBoard](XOController.control, XODrawer.draw, Constants.tic_tac_toe, gameState)
+          val gameState: GameState = GameState(player = true, Array.ofDim[GamePiece](3, 3))
+          gameEngine.play(XOController.control, XODrawer.draw, Constants.tic_tac_toe, gameState)
         }
 
         // Chess
@@ -59,9 +60,9 @@ object InitialScreen extends JFXApp3 {
 
         chess.onAction = (event: ActionEvent) => {
           val chessBoard = new ChessBoard(Array.ofDim[ChessPiece](8, 8)).initializeAll
-          val gameState: GameState[ChessBoard] = GameState(player = true, chessBoard)
-          new GameEngine
-            [ChessBoard](ChessController.control, ChessDrawer.draw, Constants.chess, gameState)
+          //  val gameState: GameState[ChessBoard] = GameState(player = true, chessBoard)
+          //new GameEngine
+          //[ChessBoard](ChessController.control, ChessDrawer.draw, Constants.chess, gameState)
         }
 
         // Connect 4

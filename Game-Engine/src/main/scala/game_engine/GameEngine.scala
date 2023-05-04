@@ -5,70 +5,77 @@ import javafx.event.ActionEvent
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.{Alert, Button, Label, TextField}
-import scalafx.scene.layout.{Background, BackgroundFill, GridPane}
+import scalafx.scene.layout.{Background, BackgroundFill}
 import scalafx.scene.paint.Color
-import scalafx.scene.paint.Color.DarkOliveGreen
 import scalafx.scene.text.Font
 import scalafx.stage.Stage
 
-case class GameState[U](
-                         player: Boolean,
-                         board: U
-                       )
+import scala.io.StdIn.readLine
 
-class GameEngine[U](controller: (U, List[String], Boolean) => U, drawer: U => GridPane, game: String, gameState: GameState[U]) {
-  play(controller, drawer, game, gameState, new Stage())
+case class GamePiece(name: String, color: String)
 
+case class GameState(
+                      player: Boolean,
+                      board: Array[Array[GamePiece]]
+                    )
+
+class GameEngine {
   // Used to append to list when certain condition is met
   @inline def cond[T](p: => Boolean, v: T): List[T] = if (p) v :: Nil else Nil
 
-  def play(controller: (U, List[String], Boolean) => U, drawer: U => GridPane, game: String, gameState: GameState[U], stage: Stage): Unit = {
-    stage.title = game
+  def play(controller: (GameState, List[String]) => GameState, drawer: Array[Array[GamePiece]] => Unit, game: String, gameState: GameState): Unit = {
+    val turn: Label = new Label(if (gameState.player) "Player 1's turn" else "Player 2's turn")
+    turn.layoutX = 0
+    turn.layoutY = 0
+    turn.setFont(new Font(20))
+    turn.setTextFill(Color.Orange)
 
-    stage.scene = new Scene(600, 450) {
-      fill = DarkOliveGreen
+    val playButton: Button = new Button("Play")
+    playButton.layoutX = 0
+    playButton.layoutY = 80
+    playButton.setFont(new Font(18))
+    playButton.setMinSize(100, 50)
+    playButton.background = new Background(Array(new BackgroundFill(Color.Cyan, null, null)))
 
-      val turn: Label = new Label(if (gameState.player) "Player 1's turn" else "Player 2's turn")
-      turn.layoutX = 460
-      turn.layoutY = 10
-      turn.setFont(new Font(20))
-      turn.setTextFill(Color.Orange)
+    val inputHandler: (List[TextField], List[Label]) = game match {
+      case Constants.connect => oneInputHandler
+      case Constants.queens => oneInputHandler
+      case Constants.tic_tac_toe => oneInputHandler
+      case Constants.sudoku => sudokuInputHandler
+      case Constants.chess => twoInputHandler
+      case Constants.checkers => twoInputHandler
+    }
 
-      val inputHandler: (List[TextField], List[Label]) = game match {
-        case Constants.connect => oneInputHandler
-        case Constants.queens => oneInputHandler
-        case Constants.tic_tac_toe => oneInputHandler
-        case Constants.sudoku => sudokuInputHandler
-        case Constants.chess => twoInputHandler
-        case Constants.checkers => twoInputHandler
-      }
+    // Initial game stage
+    drawer(gameState.board)
 
-      val playButton: Button = new Button("Play")
-      playButton.layoutX = 475
-      playButton.layoutY = 300
-      playButton.setFont(new Font(18))
-      playButton.setMinSize(100, 50)
-      playButton.background = new Background(Array(new BackgroundFill(Color.Cyan, null, null)))
-
-      content = List(drawer(gameState.board), playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
-
-      // Game loop
-      playButton.onAction = (_: ActionEvent) => {
-        val input = inputHandler._1.map(x => x.getText)
-        val alert = new Alert(AlertType.Error)
-        val newBoard = controller(gameState.board, input, gameState.player)
-        if (newBoard != gameState.board) {
-          val newGameState: GameState[U] = GameState(!gameState.player, newBoard)
-          play(controller, drawer, game, newGameState, stage)
-        } else {
-          // Alert the user that the input was not valid
-          alert.setContentText("Invalid Input")
-          alert.show()
-        }
-      }
+    // Stage for taking input
+    val stage = new Stage()
+    stage.title = "Input Screen"
+    stage.scene = new Scene(100, 100) {
+      content = List(playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
     }
     stage.show()
+
+    // Game loop
+    playButton.onAction = (_: ActionEvent) => {
+      //val input = inputHandler._1.map(x => x.getText)
+      val i = readLine()
+      val input = List(i)
+      val alert = new Alert(AlertType.Error)
+      val newGameState: GameState = controller(gameState, input)
+      // If game's state changed, then the move was valid
+      if (newGameState != gameState) {
+        drawer(newGameState.board)
+        // turn.setText(if (newGameState.player) "Player 1's turn" else "Player 2's turn")
+      } else {
+        // Alert the user that the input was not valid
+        alert.setContentText("Invalid Input")
+        alert.show()
+      }
+    }
   }
+
 
   def isDouble(game: String): Boolean = {
     game match {
@@ -76,10 +83,6 @@ class GameEngine[U](controller: (U, List[String], Boolean) => U, drawer: U => Gr
       case Constants.queens => false
       case _ => true
     }
-  }
-
-  def switchPlayer(player: Boolean): Boolean = {
-    !player
   }
 
   def oneInputHandler: (List[TextField], List[Label]) = {
@@ -94,6 +97,11 @@ class GameEngine[U](controller: (U, List[String], Boolean) => U, drawer: U => Gr
     textFieldX.setPromptText("e.g. 1a")
 
     (List(textFieldX), List(label))
+    /* if (isDouble(game))
+       println(if (player) "Player 1's turn" else "Player 2's turn")
+     print("Cell (e.g. 1a): ")
+     val cell = readLine()
+     List(cell)*/
   }
 
   def sudokuInputHandler: (List[TextField], List[Label]) = {

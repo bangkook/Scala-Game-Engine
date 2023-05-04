@@ -1,23 +1,23 @@
 package tic_tac_toe
 
-import game_engine.Controller
+import game_engine.GameState
 
-object XOController extends Controller[XOBoard] {
-  def control(state: XOBoard, move: List[String], turn: Boolean): XOBoard = {
+object XOController {
+  def control(state: GameState, move: List[String]): GameState = {
     if (move.head.length != 2)
       return state
 
     val x: Int = move.head(0) - '1'
     val y: Int = move.head(1) - 'a'
 
-    if (!state.validMove(x, y) || state.get(x, y) != null) {
+    if (!XOBoard.validMove(x, y, state.board) || state.board(x)(y) != null) {
       return state
     }
 
     // state.board = state.addMove(x, y, turn)
-    val newBoard = state.addMove(x, y, turn)
+    val newBoard = XOBoard.addMove(x, y, state.board, state.player)
 
     //  true
-    new XOBoard(newBoard)
+    GameState(!state.player, newBoard)
   }
 }
