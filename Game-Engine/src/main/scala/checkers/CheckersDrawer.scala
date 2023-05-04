@@ -1,14 +1,13 @@
 package checkers
 
-import game_engine.Drawer
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{Background, BackgroundFill, GridPane, StackPane}
 import scalafx.scene.paint.Color
 import scalafx.scene.text.{Font, FontWeight}
 
-object CheckersDrawer extends Drawer[CheckersBoard]{
-  override def draw(board: CheckersBoard): GridPane = {
+object CheckersDrawer {
+   def draw(board: CheckersBoard): GridPane = {
     val grid = new GridPane()
     grid.padding = Insets(0, 10, 10, 5)
 

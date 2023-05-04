@@ -1,6 +1,6 @@
 package tic_tac_toe
 
-import game_engine.GamePiece
+import game_engine.{GamePiece, getImage}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Label
@@ -9,6 +9,7 @@ import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color.LightGreen
 import scalafx.scene.text.{Font, FontWeight}
 import scalafx.stage.Stage
+
 
 object XODrawer {
   def draw(board: Array[Array[GamePiece]]): Unit = {
@@ -19,12 +20,9 @@ object XODrawer {
     grid.hgap = 2
     grid.vgap = 2
 
-    for (x <- 1 until board.length + 1) {
-      setColumnLabels(x, grid)
-      setRowLabels(x, grid)
-    }
-
     for (x <- board.indices) {
+      setColumnLabels(x+1, grid)
+      setRowLabels(x+1, grid)
       for (y <- board.indices) {
         val stack = new StackPane()
         stack.setMinWidth(120)
@@ -35,7 +33,7 @@ object XODrawer {
         grid.add(stack, y + 1, x + 1)
 
         if (board(x)(y) != null)
-          grid.add(XOPiece.getImage(board(x)(y).name), y + 1, x + 1)
+          grid.add(getImage(board(x)(y).name, 120, 120), y + 1, x + 1)
       }
     }
     stage.title = "Tic-Tac-Toe"

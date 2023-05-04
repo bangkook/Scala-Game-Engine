@@ -1,14 +1,13 @@
 package sudoku
 
-import game_engine.Drawer
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{Background, BackgroundFill, GridPane, StackPane}
 import scalafx.scene.paint.Color
 import scalafx.scene.text.{Font, FontWeight}
 
-object SudokuDrawer extends Drawer[SudokuBoard] {
-  override def draw(board: SudokuBoard): GridPane = {
+object SudokuDrawer  {
+   def draw(board: SudokuBoard): GridPane = {
     val grid = new GridPane()
     grid.padding = Insets(5, 5, 5, 5)
 

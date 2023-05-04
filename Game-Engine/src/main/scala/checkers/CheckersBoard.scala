@@ -1,7 +1,5 @@
 package checkers
 
-import chess.ChessPiece
-
 
 class CheckersBoard {
   val size = 8
