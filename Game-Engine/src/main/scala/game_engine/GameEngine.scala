@@ -39,7 +39,7 @@ class GameEngine {
     }
 
     val playButton: Button = new Button("Play")
-    playButton.layoutX = 0
+    playButton.layoutX = 10
     playButton.layoutY = 80
     playButton.setFont(new Font(18))
     playButton.setMinSize(100, 50)
@@ -50,11 +50,14 @@ class GameEngine {
 
      // Stage to read input from
      stage.title = "Input Window"
+     stage.width = 650
+     stage.height = 350
+     stage.setX(50)
+     stage.setY(100)
      stage.scene = new Scene(100, 100){
        content = List(playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
      }
     stage.show()
-
 
     // Game loop
     playButton.onAction = (_: ActionEvent) => {
@@ -75,6 +78,7 @@ class GameEngine {
     }
   }
 
+  // check whether the game is 2 player game or not
   def isDouble(game: String): Boolean = {
     game match {
       case Constants.sudoku => false

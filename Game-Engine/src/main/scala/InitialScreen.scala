@@ -1,6 +1,7 @@
+import checkers.{CheckersController, CheckersDrawer}
 import chess.{ChessController, ChessDrawer}
 import constants.Constants
-import game_engine.{GameEngine, GamePiece, GameState, initializeChess}
+import game_engine.{GameEngine, GamePiece, GameState, initializeCheckers, initializeChess}
 import scalafx.Includes._
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent
@@ -95,7 +96,8 @@ object InitialScreen extends JFXApp3 {
 
         checkers.onAction = (event: ActionEvent) => {
           println("CHECKERS")
-          //gameEngine.play[CheckersBoard](CheckersController.control, CheckersDrawer.draw, Constants.checkers, new CheckersBoard)
+          val gameState: GameState = GameState(player = true, initializeCheckers)
+          gameEngine.play(CheckersController.control, CheckersDrawer.draw, Constants.checkers, gameState, new Stage())
         }
 
         // Sudoku

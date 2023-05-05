@@ -1,72 +1,79 @@
 package checkers
 
+import game_engine.{GamePiece, GameState, insideBoard}
+
 
 object CheckersController {
-  def control(state: CheckersBoard, move: List[String], turn: Boolean):Boolean ={
-    val color = if(turn) -1 else 1
+  def control(state: GameState, move: List[String]): GameState = {
+    val color: String = if (state.player) "white" else "black"
+
     // Wrong input format
     if (move.head.length != 2 || move(1).length != 2)
-      return false
-    // input fields --> ???
-    val fromRow: Int = state.size - (move.head(0) - '1') - 1
-    val fromCol: Int = move.head(1) - 'a'
-    val toRow: Int = state.size - (move(1)(0) - '1') - 1
-    val toCol: Int = move(1)(1) - 'a'
+      return state
+
+    val size = state.board.length
+    val x1: Int = size - (move.head(0) - '1') - 1
+    val y1: Int = move.head(1) - 'a'
+    val x2: Int = size - (move(1)(0) - '1') - 1
+    val y2: Int = move(1)(1) - 'a'
+
+    println(x1)
+
+    println(y1)
+
+    println(x2)
+    println(y2)
 
     // If out of bounds or cell is empty, return false
-    if (!state.validMove((fromRow, fromCol), (toRow, toCol)) || state.board(fromRow)(fromCol) == 0) {
-      return false
+    if (!insideBoard(x1, y1, state.board) || !insideBoard(x2, y2, state.board) || state.board(x1)(y1) == null) {
+      println(1)
+      return state
     }
+
     // If chosen piece is not the player's piece
-    if (state.board(fromRow)(fromCol) != color) return false
+    if (state.board(x1)(y1).color != color) {
+      println(2)
+      return state
+    }
 
     // If the attacked piece is one of the player's piece
-    if (state.board(toRow)(toCol) == color) return false
+    if (state.board(x2)(y2) != null)
+      if (state.board(x2)(y2).color == color) {
+        println(3)
+        return state
+      }
 
     // If the same cell is chosen as destination
-    if(fromRow == toRow && fromCol == toCol) return false
+    if (x1 == x2 && y1 == y2) {
+      println(4)
+      return state
+    }
 
-    if (!isValid(state.board, (fromRow, fromCol), (toRow, toCol), color))
-      return false
+    if (!validMove(state.board, (x1, y1), (x2, y2))) {
+      println(5)
+      return state
+    }
 
-    state.board = state.addMove((fromRow, fromCol), (toRow, toCol))
-    true
+    val newBoard = addMove((x1, y1), (x2, y2), state.board)
+    GameState(!state.player, newBoard)
   }
 
-  private def check_grand_right(board: Array[Array[Int]], from: (Int, Int), to: (Int, Int), sign: Int): Int = {
-    val fromRow = from._1
-    val fromCol = from._1
-    val toRow = to._1
-    val toCol = to._2
-    if(board(fromRow + 1 * sign)(fromCol + 1) == -1 * sign && (board(toRow + 2 * sign)(toCol + 2) == 0)){
-      if(toRow == fromRow + 2 * sign && toCol == fromCol + 2){
-        board(fromRow + 1 * sign)(fromCol + 1) = 0
-        1
-      } else 2
-
-    } else 0
+  def addMove(from: (Int, Int), to: (Int, Int), board: Array[Array[GamePiece]] ): Array[Array[GamePiece]] = {
+    val color = board(from._1)(from._2).color
+    val name = board(from._1)(from._2).name
+    val newBoard: Array[Array[GamePiece]] = Array.tabulate(board.length, board.length)((x, y) =>
+      if (x == to._1 && y == to._2) GamePiece(name, color)
+      else if (x == from._1 && y == from._2) null
+      else board(x)(y)
+    )
+    newBoard
   }
 
-  private def check_grand_left(board: Array[Array[Int]], from: (Int, Int), to: (Int, Int), sign: Int): Int = {
-    val fromRow = from._1
-    val fromCol = from._1
-    val toRow = to._1
-    val toCol = to._2
-    if(board(fromRow + 1 * sign)(fromCol - 1) == -1 * sign && (board(toRow + 2 * sign)(toCol - 2) == 0)){
-      if(toRow == fromRow + 2 * sign && toCol == fromCol - 2){
-        board(fromRow + 1 * sign)(fromCol - 1) = 0
-        1
-      } else 2
-
-    } else 0
-  }
-
-  //private def check_move
-
-  private def isValid(board: Array[Array[Int]], from: (Int, Int), to: (Int, Int), color: Int): Boolean = {
-//    if(board(from._1)(from._2) )
+  private def validMove(board: Array[Array[GamePiece]], from: (Int, Int), to: (Int, Int)): Boolean = {
     return true
   }
-
+//  private def check_grand_left(board: Array[Array[GamePiece]], from:(Int,Int), to: (Int,Int)): Boolean = {
+//    return true
+//  }
 
 }

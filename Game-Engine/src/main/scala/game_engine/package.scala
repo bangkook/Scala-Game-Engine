@@ -32,4 +32,16 @@ package object game_engine {
     board
   }
 
+  def initializeCheckers: Array[Array[GamePiece]] = {
+    val black: String = "black"
+    val white: String = "white"
+    val size = 8
+    val board = Array.tabulate(size, size)((x, y) => {
+      if ((x + y) % 2 != 0 && x < (size / 2) - 1) GamePiece("checker", black)
+      else if ((x + y) % 2 != 0 && x > (size / 2)) GamePiece("checker", white)
+      else null
+    })
+    board
+  }
+
 }
