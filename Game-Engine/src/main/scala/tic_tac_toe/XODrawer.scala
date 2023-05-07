@@ -6,7 +6,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control.Label
 import scalafx.scene.layout._
 import scalafx.scene.paint.Color
-import scalafx.scene.paint.Color.LightGreen
+import scalafx.scene.paint.Color._
 import scalafx.scene.text.{Font, FontWeight}
 import scalafx.stage.Stage
 
@@ -21,14 +21,14 @@ object XODrawer {
     grid.vgap = 2
 
     for (x <- board.indices) {
-      setColumnLabels(x+1, grid)
-      setRowLabels(x+1, grid)
+      setColumnLabels(x + 1, grid)
+      setRowLabels(x + 1, grid)
       for (y <- board.indices) {
         val stack = new StackPane()
         stack.setMinWidth(120)
         stack.setMinHeight(120)
         stack.setAlignment(Pos.Center)
-        stack.setBackground(new Background(Array(new BackgroundFill(Color.LightGray, null, null))))
+        stack.setBackground(new Background(Array(new BackgroundFill(Color.Gray, null, null))))
 
         grid.add(stack, y + 1, x + 1)
 
@@ -37,8 +37,8 @@ object XODrawer {
       }
     }
     stage.title = "Tic-Tac-Toe"
-    stage.scene = new Scene(500, 500) {
-      fill = LightGreen
+    stage.scene = new Scene(475, 450) {
+      fill = Burlywood
       content = grid
     }
     stage.show()
