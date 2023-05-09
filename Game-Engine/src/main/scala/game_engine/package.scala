@@ -56,4 +56,13 @@ package object game_engine {
     board
   }
 
+  def initializeEightQueens: Array[Array[GamePiece]] = {
+    val size = 8
+    val board = Array.tabulate(size + 1, size)((x, y) => {
+      if (x == 8) GamePiece("queens", null)
+      else null
+    })
+    board
+  }
+
 }

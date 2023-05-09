@@ -2,7 +2,7 @@ import checkers.{CheckersController, CheckersDrawer}
 import chess.{ChessController, ChessDrawer}
 import connect4.{Connect4Controller, Connect4Drawer}
 import constants.Constants
-import game_engine.{GameEngine, GamePiece, GameState, initializeCheckers, initializeChess,intializeSudoku}
+import game_engine.{GameEngine, GamePiece, GameState, initializeCheckers, initializeChess,intializeSudoku, initializeEightQueens}
 import scalafx.Includes._
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent
@@ -15,7 +15,7 @@ import scalafx.scene.text.Font
 import scalafx.stage.Stage
 import sudoku.{SudokuController, SudokuDrawer}
 import tic_tac_toe.{XOController, XODrawer}
-
+import eightqueens.{EightQueensController, EightQueensDrawer}
 object InitialScreen extends JFXApp3 {
   override def start(): Unit = {
     val gameEngine = new GameEngine
@@ -134,7 +134,8 @@ object InitialScreen extends JFXApp3 {
         queens.setGraphic(imageView6)
 
         queens.onAction = (event: ActionEvent) => {
-          println("TTT")
+          val gameState: GameState = GameState(player = false, initializeEightQueens)
+          gameEngine.play(EightQueensController.control, EightQueensDrawer.draw, Constants.queens, gameState, new Stage())
         }
         content = List(label, tic_tac_toe, chess, connect4, checkers, sudoku, queens)
       }
