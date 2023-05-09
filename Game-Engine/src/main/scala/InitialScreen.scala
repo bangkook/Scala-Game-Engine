@@ -2,7 +2,8 @@ import checkers.{checkersController, checkersDrawer}
 import chess.{chessController, chessDrawer}
 import connect4.{connect4Controller, connect4Drawer}
 import constants.Constants
-import game_engine.{GamePiece, GameState, gameEngine, initializeCheckers, initializeChess, initializeEightQueens, initializeSudoku}
+import utility.{initializeCheckers, initializeChess, initializeEightQueens, initializeSudoku}
+import game_engine.{GamePiece, GameState, gameEngine}
 import scalafx.Includes._
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent

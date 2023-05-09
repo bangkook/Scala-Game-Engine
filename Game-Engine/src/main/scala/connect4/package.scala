@@ -1,4 +1,5 @@
-import game_engine.{GamePiece, GameState, insideBoard}
+import game_engine.{GameState,GamePiece}
+import utility.insideBoard
 import javafx.scene.shape.Circle
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -24,7 +25,7 @@ package object connect4 {
         setColumnLabels(y + 1, grid)
         val circle = new Circle(40)
         circle.setFill(Color.SkyBlue)
-        circle.setStroke(Color.BLACK)
+        circle.setStroke(Color.Black)
         circle.setStrokeWidth(2)
 
         val stack = new StackPane()

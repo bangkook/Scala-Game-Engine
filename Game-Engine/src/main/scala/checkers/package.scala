@@ -1,4 +1,5 @@
-import game_engine.{GamePiece, GameState, getImage, insideBoard}
+import game_engine.{GamePiece, GameState}
+import utility.{getImage, insideBoard}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType

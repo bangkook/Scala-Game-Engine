@@ -1,5 +1,5 @@
-import game_engine.{GameState, insideBoard}
-import game_engine.{GamePiece, getImage}
+import game_engine.{GameState,GamePiece}
+import utility.{insideBoard, getImage}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Label

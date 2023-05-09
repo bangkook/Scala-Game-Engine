@@ -27,7 +27,7 @@ package object game_engine {
     turn.layoutX = 100
     turn.layoutY = 10
     turn.setFont(new Font(20))
-    turn.setTextFill(Color.Orange)
+    turn.setTextFill(Color.Brown)
 
     val inputHandler: (List[TextField], List[Label]) = game match {
       case Constants.connect => oneInputHandler
