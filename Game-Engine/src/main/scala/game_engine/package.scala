@@ -1,4 +1,5 @@
 import scalafx.scene.image.{Image, ImageView}
+import sudoku.SudokuGenerator
 
 package object game_engine {
   def getImage(name: String, width: Int, height: Int): ImageView = {
