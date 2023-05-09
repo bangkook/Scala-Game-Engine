@@ -25,12 +25,17 @@ object Connect4Controller {
       else board(x)(y))
     newBoard
   }
-  def valid(col: Int, board: Array[Array[GamePiece]]): Int ={
-    for (i <- 5 until(-1, -1)) {
-      if(insideBoard(i, col, board) && board(i)(col) == null  ) {
-        return i
-      }
+
+  def valid(i: Int, col: Int, board: Array[Array[GamePiece]]): Int = {
+    //i start=5
+    if (i > 5) {
+      return -1
     }
-    return -1
+    if (insideBoard(i, col, board) && board(i)(col) == null) {
+      return i
+    } else {
+      return valid(i - 1, col, board)
+    }
+
   }
 }
