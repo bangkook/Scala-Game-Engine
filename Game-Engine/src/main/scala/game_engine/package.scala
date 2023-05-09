@@ -1,68 +1,80 @@
-import scalafx.scene.image.{Image, ImageView}
-import sudoku.SudokuGenerator
+import constants.Constants
+import javafx.event.ActionEvent
+import scalafx.scene.Scene
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.{Alert, Button, Label, TextField}
+import scalafx.scene.layout.{Background, BackgroundFill}
+import scalafx.scene.paint.Color
+import scalafx.scene.paint.Color.LightGray
+import scalafx.scene.text.Font
+import scalafx.stage.Stage
+import utility._
 
 package object game_engine {
-  def getImage(name: String, width: Int, height: Int): ImageView = {
-    val image1 = new Image(s"file:images/$name.png")
-    val imageView1 = new ImageView(image1)
-    imageView1.setFitWidth(width)
-    imageView1.setFitHeight(height)
-    imageView1
+  case class GamePiece(
+                        name: String,
+                        color: String
+                      )
+
+  case class GameState(
+                        player: Boolean,
+                        board: Array[Array[GamePiece]]
+                      )
+
+  // Abstract game engine
+  def gameEngine(controller: (GameState, List[String]) => GameState, drawer: Array[Array[GamePiece]] => Unit, game: String, gameState: GameState, stage: Stage): Unit = {
+    val turn: Label = new Label(if (gameState.player) "Player 1's turn" else "Player 2's turn")
+    turn.layoutX = 100
+    turn.layoutY = 10
+    turn.setFont(new Font(20))
+    turn.setTextFill(Color.Orange)
+
+    val inputHandler: (List[TextField], List[Label]) = game match {
+      case Constants.connect => oneInputHandler
+      case Constants.queens => oneInputHandler
+      case Constants.tic_tac_toe => oneInputHandler
+      case Constants.sudoku => sudokuInputHandler
+      case Constants.chess => twoInputHandler
+      case Constants.checkers => twoInputHandler
+      case _ => null
+    }
+
+    val playButton: Button = new Button("Play")
+    playButton.layoutX = 250
+    playButton.layoutY = 80
+    playButton.setFont(new Font(18))
+    playButton.setMinSize(100, 50)
+    playButton.background = new Background(Array(new BackgroundFill(Color.Cyan, null, null)))
+
+    // Draw board
+    drawer(gameState.board)
+
+    // Stage to read input from user
+    stage.title = "Input Window"
+    stage.width = 400
+    stage.height = 250
+    stage.setX(10)
+    stage.setY(100)
+    stage.scene = new Scene() {
+      fill = LightGray
+      content = List(playButton) ++ cond(isDouble(game), turn) ++ inputHandler._1 ++ inputHandler._2
+    }
+    stage.show()
+
+    // Game loop
+    playButton.onAction = (_: ActionEvent) => {
+      val input = inputHandler._1.map(x => x.getText)
+      val alert = new Alert(AlertType.Error)
+      val newGameState: GameState = controller(gameState, input)
+      // If game's state changed, then the move was valid
+      if (newGameState != gameState) {
+        gameEngine(controller, drawer, game, newGameState, stage)
+      } else {
+        // Alert the user that the input was not valid
+        alert.setContentText("Invalid Input")
+        alert.show()
+        //gameEngine(controller, drawer, game, gameState, stage)
+      }
+    }
   }
-
-  // Check move is within bounds
-  def insideBoard(x: Int, y: Int, board: Array[Array[GamePiece]]): Boolean = {
-    x >= 0 && x < board.length && y >= 0 && y < board(0).length
-  }
-
-  // Initialize chess board
-  def initializeChess: Array[Array[GamePiece]] = {
-    val black: String = "black"
-    val white: String = "white"
-    val pawn: String = "pawn"
-    val chessPieces: Array[String] = Array("rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook")
-
-    val size = 8
-    val board = Array.tabulate(size, size)((x, y) => {
-      if (x == 0) GamePiece(chessPieces(y), black)
-      else if (x == 1) GamePiece( pawn,black)
-      else if (x == size - 1) GamePiece(chessPieces(y), white)
-      else if (x == size - 2) GamePiece(pawn, white)
-      else null
-    })
-    board
-  }
-
-  def initializeCheckers: Array[Array[GamePiece]] = {
-    val black: String = "black"
-    val white: String = "white"
-    val size = 8
-    val board = Array.tabulate(size, size)((x, y) => {
-      if ((x + y) % 2 != 0 && x < (size / 2) - 1) GamePiece("checker", black)
-      else if ((x + y) % 2 != 0 && x > (size / 2)) GamePiece("checker", white)
-      else null
-    })
-    board
-  }
-
-  def initializeSudoku: Array[Array[GamePiece]] = {
-    val size = 9
-    val intialBoard: Array[Array[Int]] = Array.ofDim[Int](size, size)
-    SudokuGenerator.getSudoku(intialBoard)
-    val board = Array.tabulate(size, size)((x, y) => {
-      if (intialBoard(x)(y) != 0) GamePiece(intialBoard(x)(y).toString, "init")
-      else GamePiece("0", "free")
-    })
-    board
-  }
-
-  def initializeEightQueens: Array[Array[GamePiece]] = {
-    val size = 8
-    val board = Array.tabulate(size + 1, size)((x, y) => {
-      if (x == 8) GamePiece("queens", null)
-      else null
-    })
-    board
-  }
-
 }

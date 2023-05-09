@@ -1,8 +1,8 @@
-import checkers.{CheckersController, CheckersDrawer}
-import chess.{ChessController, ChessDrawer}
-import connect4.{Connect4Controller, Connect4Drawer}
+import checkers.{checkersController, checkersDrawer}
+import chess.{chessController, chessDrawer}
+import connect4.{connect4Controller, connect4Drawer}
 import constants.Constants
-import game_engine.{GameEngine, GamePiece, GameState, initializeCheckers, initializeChess,initializeSudoku, initializeEightQueens}
+import game_engine.{GamePiece, GameState, gameEngine, initializeCheckers, initializeChess, initializeEightQueens, initializeSudoku}
 import scalafx.Includes._
 import scalafx.application.JFXApp3
 import scalafx.event.ActionEvent
@@ -13,13 +13,12 @@ import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Font
 import scalafx.stage.Stage
-import sudoku.{SudokuController, SudokuDrawer}
+import sudoku.{sudokuController, sudokuDrawer}
 import tic_tac_toe.{XOController, XODrawer}
-import eightqueens.{EightQueensController, EightQueensDrawer}
+import eight_queens.{queensController, queensDrawer}
+
 object InitialScreen extends JFXApp3 {
   override def start(): Unit = {
-    val gameEngine = new GameEngine
-
     stage = new JFXApp3.PrimaryStage {
       title.value = "Game Engine"
       width = 650
@@ -27,7 +26,7 @@ object InitialScreen extends JFXApp3 {
       scene = new Scene {
         fill = LightGreen
 
-        val label = new Label("Game Engineeto")
+        val label = new Label("Game Engine")
         label.setFont(new Font(30))
         label.layoutX = 200
         label.layoutY = 10
@@ -45,9 +44,9 @@ object InitialScreen extends JFXApp3 {
         tic_tac_toe.layoutY = 75
         tic_tac_toe.setGraphic(imageView1)
 
-        tic_tac_toe.onAction = (event: ActionEvent) => {
+        tic_tac_toe.onAction = (_: ActionEvent) => {
           val gameState: GameState = GameState(player = true, Array.ofDim[GamePiece](3, 3))
-          gameEngine.play(XOController.control, XODrawer.draw, Constants.tic_tac_toe, gameState, new Stage())
+          gameEngine(XOController, XODrawer, Constants.tic_tac_toe, gameState, new Stage())
         }
 
         // Chess
@@ -62,10 +61,9 @@ object InitialScreen extends JFXApp3 {
         chess.layoutY = 75
         chess.setGraphic(imageView2)
 
-        chess.onAction = (event: ActionEvent) => {
+        chess.onAction = (_: ActionEvent) => {
           val gameState: GameState = GameState(player = true, initializeChess)
-          //  val gameState: GameState[ChessBoard] = GameState(player = true, chessBoard)
-          gameEngine.play(ChessController.control, ChessDrawer.draw, Constants.chess, gameState, new Stage())
+          gameEngine(chessController, chessDrawer, Constants.chess, gameState, new Stage())
         }
 
         // Connect 4
@@ -80,10 +78,9 @@ object InitialScreen extends JFXApp3 {
         connect4.layoutY = 75
         connect4.setGraphic(imageView3)
 
-        connect4.onAction = (event: ActionEvent) => {
-          println("Connect")
+        connect4.onAction = (_: ActionEvent) => {
           val gameState: GameState = GameState(player = true, Array.ofDim[GamePiece](6, 7))
-          gameEngine.play(Connect4Controller.control,Connect4Drawer.draw, Constants.tic_tac_toe, gameState, new Stage())
+          gameEngine(connect4Controller, connect4Drawer, Constants.connect, gameState, new Stage())
         }
 
         // Checkers
@@ -98,10 +95,9 @@ object InitialScreen extends JFXApp3 {
         checkers.layoutY = 225
         checkers.setGraphic(imageView4)
 
-        checkers.onAction = (event: ActionEvent) => {
-          println("CHECKERS")
+        checkers.onAction = (_: ActionEvent) => {
           val gameState: GameState = GameState(player = true, initializeCheckers)
-          gameEngine.play(CheckersController.control, CheckersDrawer.draw, Constants.checkers, gameState, new Stage())
+          gameEngine(checkersController, checkersDrawer, Constants.checkers, gameState, new Stage())
         }
 
         // Sudoku
@@ -116,9 +112,9 @@ object InitialScreen extends JFXApp3 {
         sudoku.layoutY = 225
         sudoku.setGraphic(imageView5)
 
-        sudoku.onAction = (event: ActionEvent) => {
+        sudoku.onAction = (_: ActionEvent) => {
           val gameState: GameState = GameState(player = true, initializeSudoku)
-          gameEngine.play(SudokuController.control, SudokuDrawer.draw, Constants.sudoku, gameState, new Stage())
+          gameEngine(sudokuController, sudokuDrawer, Constants.sudoku, gameState, new Stage())
         }
 
         // 8-Queens
@@ -133,11 +129,11 @@ object InitialScreen extends JFXApp3 {
         queens.layoutY = 225
         queens.setGraphic(imageView6)
 
-        queens.onAction = (event: ActionEvent) => {
+        queens.onAction = (_: ActionEvent) => {
           val gameState: GameState = GameState(player = false, initializeEightQueens)
-          gameEngine.play(EightQueensController.control, EightQueensDrawer.draw, Constants.queens, gameState, new Stage())
+          gameEngine(queensController, queensDrawer, Constants.queens, gameState, new Stage())
         }
-        content = List(label, tic_tac_toe, chess, connect4, checkers, sudoku, queens)
+        content = List(tic_tac_toe, chess, connect4, checkers, sudoku, queens)
       }
     }
   }

@@ -1,11 +1,49 @@
-package checkers
-
-import game_engine.{GamePiece, GameState, insideBoard}
-import scalafx.scene.control.Alert
+import game_engine.{GamePiece, GameState, getImage, insideBoard}
+import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.{Alert, Label}
+import scalafx.scene.layout.{Background, BackgroundFill, GridPane, StackPane}
+import scalafx.scene.paint.Color
+import scalafx.scene.paint.Color.LightGreen
+import scalafx.scene.text.{Font, FontWeight}
+import scalafx.stage.Stage
 
-object CheckersController {
-  def control(state: GameState, move: List[String]): GameState = {
+package object checkers {
+  // Draws the game board and pieces given a game state
+  def checkersDrawer(board: Array[Array[GamePiece]]): Unit = {
+    val stage = new Stage()
+    val grid = new GridPane()
+    grid.padding = Insets(0, 10, 10, 5)
+
+    val whiteBackground = new Background(Array(new BackgroundFill(Color.White, null, null)))
+    val blackBackground = new Background(Array(new BackgroundFill(Color.Grey, null, null)))
+
+    for (x <- board.indices) {
+      setColumnLabels(x + 1, grid)
+      setRowLabels(board.length - x, grid)
+      for (y <- board.indices) {
+        val stack = new StackPane()
+        stack.setMinWidth(45)
+        stack.setMinHeight(45)
+        stack.setAlignment(Pos.Center)
+        stack.setBackground(if ((x + y) % 2 == 0) whiteBackground else blackBackground)
+        grid.add(stack, y + 1, x + 1)
+        if (board(x)(y) != null)
+          grid.add(getImage(board(x)(y).color + "_" + board(x)(y).name, 45, 45), y + 1, x + 1)
+      }
+    }
+    stage.title = "Checkers"
+    stage.scene = new Scene(475, 450) {
+      fill = LightGreen
+      content = grid
+    }
+    stage.show()
+  }
+
+  // Validates the user input according to the rules of the game
+  // Applies the user action and modifies the board accordingly
+  def checkersController(state: GameState, move: List[String]): GameState = {
     val color: String = if (state.player) "white" else "black"
 
     // Wrong input format
@@ -18,13 +56,6 @@ object CheckersController {
     val x2: Int = size - (move(1)(0) - '1') - 1
     val y2: Int = move(1)(1) - 'a'
 
-    println("x1 = "+ x1)
-
-    println("y1 = "+y1)
-
-    println("x2 = "+x2)
-    println("y2 = "+y2)
-
     // If out of bounds or cell is empty, return false
     if (!insideBoard(x1, y1, state.board) || !insideBoard(x2, y2, state.board) || state.board(x1)(y1) == null) {
       println(1)
@@ -33,25 +64,21 @@ object CheckersController {
 
     // If chosen piece is not the player's piece
     if (state.board(x1)(y1).color != color) {
-      println(2)
       return state
     }
 
     // If the attacked piece is one of the player's piece
     if (state.board(x2)(y2) != null)
       if (state.board(x2)(y2).color == color) {
-        println(3)
         return state
       }
 
     // If the same cell is chosen as destination
     if (x1 == x2 && y1 == y2) {
-      println(4)
       return state
     }
 
     if (!validMove(state.board, (x1, y1), (x2, y2),color)) {
-      println(5)
       return state
     }
 
@@ -70,32 +97,26 @@ object CheckersController {
       else board(x)(y)
     )
     if(Math.abs(from._1 - to._1) == 2){ //eating
-      val eatx = (from._1 + to._1) / 2
-      val eaty = (from._2 + to._2) / 2
-      println("eatx = " +eatx+ " , eaty = "+ eaty)
-      newBoard(eatx)(eaty) = null
+      val eatX = (from._1 + to._1) / 2
+      val eatY = (from._2 + to._2) / 2
+      newBoard(eatX)(eatY) = null
     }
     newBoard
   }
 
-
-
-  private def validMove(board: Array[Array[GamePiece]], from: (Int, Int), to: (Int, Int), color: String): Boolean = {
+  def validMove(board: Array[Array[GamePiece]], from: (Int, Int), to: (Int, Int), color: String): Boolean = {
     // if to is not null return false
     if(board(to._1)(to._2) != null) {
-      println("Heree in 85")
       return false
     }
     // if the move is not 1 or 2 break
     println(Math.abs(from._1 - to._1))
     if(Math.abs(from._1 - to._1) != 1 && Math.abs(from._1 - to._1) != 2) {
-      println("Heree in 90")
       return false
     }
     // white and black can move forward diagonally in their directions
     if(color == "white"){
       if (from._1 - to._1  != Math.abs(to._2 - from._2)) {
-        println("in line 92")
         return false
       }
     }else{ // color == "black
@@ -104,7 +125,6 @@ object CheckersController {
     }
     val leftSide = check_grand_left(board, (from._1, from._2), (to._1, to._2),color)
     val rightSide = check_grand_right(board, (from._1, from._2), (to._1, to._2),color)
-    println("rightSide = "+ rightSide+ " , leftSide = "+ leftSide)
     if(rightSide == 1){
       return true
     }else if(rightSide == 2 || rightSide == 0){
@@ -122,7 +142,8 @@ object CheckersController {
     }
     true
   }
-  private def check_grand_left(board: Array[Array[GamePiece]], from:(Int,Int), to: (Int,Int),color: String): Int = {
+
+  def check_grand_left(board: Array[Array[GamePiece]], from:(Int,Int), to: (Int,Int),color: String): Int = {
     val fromRow = from._1
     val fromCol = from._2
     val toRow = to._1
@@ -146,6 +167,7 @@ object CheckersController {
     0
 
   }
+
   def check_grand_right(board: Array[Array[GamePiece]], from:(Int,Int), to: (Int,Int),color: String): Int = {
     val fromRow = from._1
     val fromCol = from._2
@@ -169,5 +191,29 @@ object CheckersController {
       }
     }
     0
+  }
+
+  def setColumnLabels(x: Int, grid: GridPane): Unit = {
+    val col = ('a' + x - 1).toChar.toString
+    val label = new Label(col)
+    label.setFont(Font.font("Arial", FontWeight.Bold, 25))
+    val stack = new StackPane()
+    stack.setMinWidth(45)
+    stack.setMinHeight(45)
+    stack.setAlignment(Pos.Center)
+    stack.getChildren.add(label)
+    grid.add(stack, x, 0)
+  }
+
+  def setRowLabels(x: Int, grid: GridPane): Unit = {
+    val row = ('1' + x - 1).toChar.toString
+    val label = new Label(row)
+    label.setFont(Font.font("Arial", FontWeight.Bold, 25))
+    val stack = new StackPane()
+    stack.setMinWidth(45)
+    stack.setMinHeight(45)
+    stack.setAlignment(Pos.Center)
+    stack.getChildren.add(label)
+    grid.add(stack, 0, 9 - x)
   }
 }

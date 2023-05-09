@@ -1,11 +1,52 @@
-package chess
-
-import game_engine.{GamePiece, GameState, insideBoard}
+import game_engine.{GamePiece, GameState, getImage, insideBoard}
+import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.Scene
+import scalafx.scene.control.Label
+import scalafx.scene.layout.{Background, BackgroundFill, GridPane, StackPane}
+import scalafx.scene.paint.Color
+import scalafx.scene.paint.Color.Burlywood
+import scalafx.scene.text.{Font, FontWeight}
+import scalafx.stage.Stage
 
 import scala.annotation.tailrec
 
-object ChessController {
-  def control(state: GameState, move: List[String]): GameState = {
+package object chess {
+  // Draws the game board and pieces given a game state
+  def chessDrawer(board: Array[Array[GamePiece]]): Unit = {
+    val stage = new Stage()
+    val grid = new GridPane()
+    grid.padding = Insets(0, 10, 10, 5)
+
+    val whiteBackground = new Background(Array(new BackgroundFill(Color.White, null, null)))
+    val blackBackground = new Background(Array(new BackgroundFill(Color.Grey, null, null)))
+
+    for (x <- board.indices) {
+      setColumnLabels(x + 1, grid)
+      setRowLabels(board.length - x, grid)
+      for (y <- board.indices) {
+        val stack = new StackPane()
+        stack.setMinWidth(45)
+        stack.setMinHeight(45)
+        stack.setAlignment(Pos.Center)
+        stack.setBackground(if ((x + y) % 2 == 0) whiteBackground else blackBackground)
+
+        grid.add(stack, y + 1, x + 1)
+
+        if (board(x)(y) != null)
+          grid.add(getImage(board(x)(y).color + "-" + board(x)(y).name, 45, 45), y + 1, x + 1)
+      }
+    }
+    stage.title = "Chess"
+    stage.scene = new Scene(475, 450) {
+      fill = Burlywood
+      content = grid
+    }
+    stage.show()
+  }
+
+  // Validates the user input according to the rules of the game
+  // Applies the user action and modifies the board accordingly
+  def chessController(state: GameState, move: List[String]): GameState = {
     val color: String = if (state.player) "white" else "black"
 
     // Wrong input format
@@ -18,13 +59,6 @@ object ChessController {
     val x2: Int = size - (move(1)(0) - '1') - 1
     val y2: Int = move(1)(1) - 'a'
 
-    println(x1)
-
-    println(y1)
-
-    println(x2)
-    println(y2)
-
     // If out of bounds or cell is empty, return false
     if (!insideBoard(x1, y1, state.board) || !insideBoard(x2, y2, state.board) || state.board(x1)(y1) == null) {
       println(1)
@@ -33,25 +67,21 @@ object ChessController {
 
     // If chosen piece is not the player's piece
     if (state.board(x1)(y1).color != color) {
-      println(2)
       return state
     }
 
     // If the attacked piece is one of the player's piece
     if (state.board(x2)(y2) != null)
       if (state.board(x2)(y2).color == color) {
-        println(3)
         return state
       }
 
     // If the same cell is chosen as destination
     if (x1 == x2 && y1 == y2) {
-      println(4)
       return state
     }
 
     if (!validMove(state.board, (x1, y1), (x2, y2))) {
-      println(5)
       return state
     }
 
@@ -70,7 +100,7 @@ object ChessController {
     newBoard
   }
 
-  private def validMove(board: Array[Array[GamePiece]], from: (Int, Int), to: (Int, Int)): Boolean = {
+   def validMove(board: Array[Array[GamePiece]], from: (Int, Int), to: (Int, Int)): Boolean = {
     board(from._1)(from._2).name match {
       case "rook" => checkRook(board, from._1, from._2, to._1, to._2)
       case "knight" => checkKnight(from._1, from._2, to._1, to._2)
@@ -82,7 +112,7 @@ object ChessController {
     }
   }
 
-  private def checkRook(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
+   def checkRook(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
     // If move is not straight
     if (x1 != x2 && y1 != y2)
       return false
@@ -98,7 +128,7 @@ object ChessController {
     true
   }
 
-  private def checkBishop(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
+   def checkBishop(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
     // If move is not diagonal, return false
     if (Math.abs(x1 - x2) != Math.abs(y1 - y2))
       return false
@@ -118,19 +148,19 @@ object ChessController {
     loop(x1 + xDiff, y1 + yDiff)
   }
 
-  private def checkKnight(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
+   def checkKnight(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
     Math.abs(x1 - x2) == 2 && Math.abs(y1 - y2) == 1 || Math.abs(x1 - x2) == 1 && Math.abs(y1 - y2) == 2
   }
 
-  private def checkQueen(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
+   def checkQueen(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
     checkRook(board, x1, y1, x2, y2) || checkBishop(board, x2, y1, x2, y2)
   }
 
-  private def checkKing(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
+   def checkKing(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
     Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1
   }
 
-  private def checkPawn(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
+   def checkPawn(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
     // White pawn
     if (board(x1)(y1).color == "white") {
       // 2 steps
@@ -155,6 +185,31 @@ object ChessController {
     }
 
     y1 == y2 // Straight motion in the same column
+  }
+
+  // Set columns characters
+  def setColumnLabels(x: Int, grid: GridPane): Unit = {
+    val col = ('a' + x - 1).toChar.toString
+    val label = new Label(col)
+    label.setFont(Font.font("Arial", FontWeight.Bold, 25))
+    val stack = new StackPane()
+    stack.setMinWidth(45)
+    stack.setMinHeight(45)
+    stack.setAlignment(Pos.Center)
+    stack.getChildren.add(label)
+    grid.add(stack, x, 0)
+  }
+
+  def setRowLabels(x: Int, grid: GridPane): Unit = {
+    val row = ('1' + x - 1).toChar.toString
+    val label = new Label(row)
+    label.setFont(Font.font("Arial", FontWeight.Bold, 25))
+    val stack = new StackPane()
+    stack.setMinWidth(45)
+    stack.setMinHeight(45)
+    stack.setAlignment(Pos.Center)
+    stack.getChildren.add(label)
+    grid.add(stack, 0, 9 - x)
   }
 
 }

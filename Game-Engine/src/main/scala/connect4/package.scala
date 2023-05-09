@@ -1,18 +1,17 @@
-package connect4
-
-import game_engine.{GamePiece, getImage}
+import game_engine.{GamePiece, GameState, insideBoard}
 import javafx.scene.shape.Circle
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Label
-import scalafx.scene.layout._
+import scalafx.scene.layout.{GridPane, StackPane}
 import scalafx.scene.paint.Color
-import scalafx.scene.paint.Color._
+import scalafx.scene.paint.Color.{Green, Red}
 import scalafx.scene.text.{Font, FontWeight}
 import scalafx.stage.Stage
 
-object Connect4Drawer {
-  def draw(board: Array[Array[GamePiece]]): Unit = {
+package object connect4 {
+  // Draws the game board and pieces given a game state
+  def connect4Drawer(board: Array[Array[GamePiece]]): Unit = {
     val stage = new Stage()
     val grid = new GridPane()
     grid.padding = Insets(75, 500, 500, 100)
@@ -52,6 +51,46 @@ object Connect4Drawer {
     }
     stage.show()
   }
+
+  // Validates the user input according to the rules of the game
+  // Applies the user action and modifies the board accordingly
+  def connect4Controller(state: GameState, move: List[String]): GameState = {
+    if (move.head.length != 1)
+      return state
+
+    val y: Int = move.head(0) - '1'
+
+    val x = valid(5,y,state.board)
+    if (!insideBoard(x, y, state.board) || state.board(x)(y) != null) {
+      return state
+    }
+
+    val newBoard = addMove(x, y, state.board, state.player)
+
+    //  true
+    GameState(!state.player, newBoard)
+  }
+
+  def addMove(row: Int, col: Int, board: Array[Array[GamePiece]], player: Boolean): Array[Array[GamePiece]] = {
+    val newBoard = Array.tabulate(board.length, board(0).length)((x, y) =>
+      if (x == row && y == col) GamePiece(if (player) "1" else "2", null)
+      else board(x)(y))
+    newBoard
+  }
+
+  def valid(i: Int, col: Int, board: Array[Array[GamePiece]]): Int = {
+    //i start=5
+    if (i > 5) {
+      return -1
+    }
+    if (insideBoard(i, col, board) && board(i)(col) == null) {
+      return i
+    } else {
+      return valid(i - 1, col, board)
+    }
+
+  }
+
   // Set columns characters
   def setColumnLabels(x: Int, grid: GridPane): Unit = {
     val row = ('1' + x - 1).toChar.toString
@@ -64,6 +103,4 @@ object Connect4Drawer {
     stack.getChildren.add(label)
     grid.add(stack, x, 7)
   }
-
-
 }

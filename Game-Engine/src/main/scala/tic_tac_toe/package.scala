@@ -1,5 +1,4 @@
-package tic_tac_toe
-
+import game_engine.{GameState, insideBoard}
 import game_engine.{GamePiece, getImage}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -10,9 +9,9 @@ import scalafx.scene.paint.Color._
 import scalafx.scene.text.{Font, FontWeight}
 import scalafx.stage.Stage
 
-
-object XODrawer {
-  def draw(board: Array[Array[GamePiece]]): Unit = {
+package object tic_tac_toe {
+  // Draws the game board and pieces given a game state
+  def XODrawer(board: Array[Array[GamePiece]]): Unit = {
     val stage = new Stage()
     val grid = new GridPane()
     grid.padding = Insets(0, 100, 100, 20)
@@ -44,6 +43,34 @@ object XODrawer {
     stage.show()
   }
 
+  // Validates the user input according to the rules of the game
+  // Applies the user action and modifies the board accordingly
+  def XOController(state: GameState, move: List[String]): GameState = {
+    if (move.head.length != 2)
+      return state
+
+    val x: Int = move.head(0) - '1'
+    val y: Int = move.head(1) - 'a'
+
+    if (!insideBoard(x, y, state.board) || state.board(x)(y) != null) {
+      return state
+    }
+
+    // state.board = state.addMove(x, y, turn)
+    val newBoard = addMove(x, y, state.board, state.player)
+
+    //  true
+    GameState(!state.player, newBoard)
+  }
+
+  // Apply the move on the board
+  def addMove(row: Int, col: Int, board: Array[Array[GamePiece]], player: Boolean): Array[Array[GamePiece]] = {
+    val newBoard = Array.tabulate(board.length, board.length)((x, y) =>
+      if (x == row && y == col) GamePiece(if (player) "x" else "o", null)
+      else board(x)(y))
+    newBoard
+  }
+
   // Set columns characters
   def setColumnLabels(x: Int, grid: GridPane): Unit = {
     val col = ('a' + x - 1).toChar.toString
@@ -69,4 +96,5 @@ object XODrawer {
     stack.getChildren.add(label)
     grid.add(stack, 0, x)
   }
+
 }
