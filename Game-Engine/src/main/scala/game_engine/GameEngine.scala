@@ -127,7 +127,7 @@ class GameEngine {
     textFieldVal.layoutX = 40
     textFieldVal.layoutY = 150
     textFieldVal.setMaxSize(50, 50)
-    textFieldVal.setPromptText("1:9")
+    textFieldVal.setPromptText("1:9 or 0 to delete")
 
     (List(textFieldPos, textFieldVal), List(labelPos, labelVal))
   }

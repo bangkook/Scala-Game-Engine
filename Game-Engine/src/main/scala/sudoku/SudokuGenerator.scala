@@ -1,5 +1,5 @@
 package sudoku
-
+import scala.collection.mutable.ArrayBuffer
 import scala.collection.immutable.Set
 
 object SudokuGenerator {
@@ -89,17 +89,18 @@ object SudokuGenerator {
     }
   }
 
-  def getSudoku(board: Array[Array[Int]]){
+  def getSudoku(board1: Array[Array[Int]]){
+    for (y <- 0 until 81) {
+      puzzle(y)=0
+    }
     generate(0, possibleNumbers(0))
     removeKDigits()
     var c = 0
-    for (x <- 0 until board.size) {
-      for (y <- 0 until board.size) {
-        board(x)(y) = puzzle(c)
+    for (x <- 0 until board1.size) {
+      for (y <- 0 until board1.size) {
+        board1(x)(y) = puzzle(c)
         c = c + 1
-        //                print(board(x)(y) + "  ")
       }
-      //            println("")
     }
   }
 

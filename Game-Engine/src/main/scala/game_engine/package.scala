@@ -44,4 +44,15 @@ package object game_engine {
     board
   }
 
+  def initializeSudoku: Array[Array[GamePiece]] = {
+    val size = 9
+    val intialBoard: Array[Array[Int]] = Array.ofDim[Int](size, size)
+    SudokuGenerator.getSudoku(intialBoard)
+    val board = Array.tabulate(size, size)((x, y) => {
+      if (intialBoard(x)(y) != 0) GamePiece(intialBoard(x)(y).toString, "init")
+      else GamePiece("0", "free")
+    })
+    board
+  }
+
 }

@@ -13,6 +13,7 @@ import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Font
 import scalafx.stage.Stage
+import sudoku.{SudokuController, SudokuDrawer}
 import tic_tac_toe.{XOController, XODrawer}
 
 object InitialScreen extends JFXApp3 {
@@ -116,7 +117,8 @@ object InitialScreen extends JFXApp3 {
         sudoku.setGraphic(imageView5)
 
         sudoku.onAction = (event: ActionEvent) => {
-          //  gameEngine.play[SudokuBoard](SudokuController.control, SudokuDrawer.draw, Constants.sudoku, new SudokuBoard)
+          val gameState: GameState = GameState(player = true, initializeSudoku)
+          gameEngine.play(SudokuController.control, SudokuDrawer.draw, Constants.sudoku, gameState, new Stage())
         }
 
         // 8-Queens
