@@ -5,6 +5,8 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.text.Font
 import sudoku.SudokuGenerator
 
+import javax.swing.ImageIcon
+
 // Utility functions invoked by other functions
 package object utility {
   // Used to append to list when certain condition is met
@@ -90,7 +92,8 @@ package object utility {
   }
 
   def getImage(name: String, width: Int, height: Int): ImageView = {
-    val image1 = new Image(s"file:images/$name.png")
+//    val image1 = new Image(s"file:images/$name.png")
+    val image1 = new ImageIcon(getClass().getClassLoader().getResource(s"images/$name.png")).toString()
     val imageView1 = new ImageView(image1)
     imageView1.setFitWidth(width)
     imageView1.setFitHeight(height)

@@ -18,6 +18,8 @@ import sudoku.{sudokuController, sudokuDrawer}
 import tic_tac_toe.{XOController, XODrawer}
 import eight_queens.{queensController, queensDrawer}
 
+import javax.swing.ImageIcon
+
 object InitialScreen extends JFXApp3 {
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -34,7 +36,8 @@ object InitialScreen extends JFXApp3 {
         label.setTextFill(Color.Brown)
 
         // Tic-Tac-Toe
-        val image1 = new Image("file:images/tic-tac-toe.png")
+//        val image1 = new Image("file:images/tic-tac-toe.png")
+        val image1 = new ImageIcon(getClass().getClassLoader().getResource("images/tic-tac-toe.png")).toString()
         val imageView1 = new ImageView(image1)
         imageView1.setFitWidth(100)
         imageView1.setFitHeight(100)
@@ -51,7 +54,8 @@ object InitialScreen extends JFXApp3 {
         }
 
         // Chess
-        val image2 = new Image("file:images/chess.png")
+//        val image2 = new Image("file:images/chess.png")
+        val image2 = new ImageIcon(getClass().getClassLoader().getResource("images/chess.png")).toString()
         val imageView2 = new ImageView(image2)
         imageView2.setFitWidth(100)
         imageView2.setFitHeight(100)
@@ -68,7 +72,8 @@ object InitialScreen extends JFXApp3 {
         }
 
         // Connect 4
-        val image3 = new Image("file:images/connect.png")
+//        val image3 = new Image("file:images/connect.png")
+        val image3 = new ImageIcon(getClass().getClassLoader().getResource("images/connect.png")).toString()
         val imageView3 = new ImageView(image3)
         imageView3.setFitWidth(100)
         imageView3.setFitHeight(100)
@@ -85,7 +90,8 @@ object InitialScreen extends JFXApp3 {
         }
 
         // Checkers
-        val image4 = new Image("file:images/checker.png")
+//        val image4 = new Image("file:images/checker.png")
+        val image4 = new ImageIcon(getClass().getClassLoader().getResource("images/checker.png")).toString()
         val imageView4 = new ImageView(image4)
         imageView4.setFitWidth(100)
         imageView4.setFitHeight(100)
@@ -102,7 +108,8 @@ object InitialScreen extends JFXApp3 {
         }
 
         // Sudoku
-        val image5 = new Image("file:images/sudoku.png")
+//        val image5 = new Image("file:images/sudoku.png")
+        val image5 = new ImageIcon(getClass().getClassLoader().getResource("images/sudoku.png")).toString()
         val imageView5 = new ImageView(image5)
         imageView5.setFitWidth(100)
         imageView5.setFitHeight(100)
@@ -119,7 +126,8 @@ object InitialScreen extends JFXApp3 {
         }
 
         // 8-Queens
-        val image6 = new Image("file:images/queens.png")
+//        val image6 = new Image("file:images/queens.png")
+        val image6 = new ImageIcon(getClass().getClassLoader().getResource("images/queens.png")).toString()
         val imageView6 = new ImageView(image6)
         imageView6.setFitWidth(100)
         imageView6.setFitHeight(100)
