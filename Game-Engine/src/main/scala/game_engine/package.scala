@@ -22,7 +22,7 @@ package object game_engine {
                       )
 
   // Abstract game engine
-  def gameEngine(controller: (GameState, List[String]) => GameState, drawer: Array[Array[GamePiece]] => Unit, game: String, gameState: GameState, stage: Stage): Unit = {
+  def gameEngine(controller: (GameState, List[String]) => Array[Array[GamePiece]], drawer: Array[Array[GamePiece]] => Unit, game: String, gameState: GameState, stage: Stage): Unit = {
     val turn: Label = new Label(if (gameState.player) "Player 1's turn" else "Player 2's turn")
     turn.layoutX = 100
     turn.layoutY = 10
@@ -65,9 +65,10 @@ package object game_engine {
     playButton.onAction = (_: ActionEvent) => {
       val input = inputHandler._1.map(x => x.getText)
       val alert = new Alert(AlertType.Error)
-      val newGameState: GameState = controller(gameState, input)
+      val newBoard : Array[Array[GamePiece]] =  controller(gameState, input)
       // If game's state changed, then the move was valid
-      if (newGameState != gameState) {
+      if (!(newBoard sameElements gameState.board)) {
+        val newGameState: GameState = GameState(!gameState.player, newBoard)
         gameEngine(controller, drawer, game, newGameState, stage)
       } else {
         // Alert the user that the input was not valid

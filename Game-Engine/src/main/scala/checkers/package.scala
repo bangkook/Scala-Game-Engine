@@ -44,12 +44,12 @@ package object checkers {
 
   // Validates the user input according to the rules of the game
   // Applies the user action and modifies the board accordingly
-  def checkersController(state: GameState, move: List[String]): GameState = {
+  def checkersController(state: GameState, move: List[String]): Array[Array[GamePiece]] = {
     val color: String = if (state.player) "white" else "black"
 
     // Wrong input format
     if (move.head.length != 2 || move(1).length != 2)
-      return state
+      return state.board
 
     val size = state.board.length
     val x1: Int = size - (move.head(0) - '1') - 1
@@ -60,31 +60,31 @@ package object checkers {
     // If out of bounds or cell is empty, return false
     if (!insideBoard(x1, y1, state.board) || !insideBoard(x2, y2, state.board) || state.board(x1)(y1) == null) {
       println(1)
-      return state
+      return state.board
     }
 
     // If chosen piece is not the player's piece
     if (state.board(x1)(y1).color != color) {
-      return state
+      return state.board
     }
 
     // If the attacked piece is one of the player's piece
     if (state.board(x2)(y2) != null)
       if (state.board(x2)(y2).color == color) {
-        return state
+        return state.board
       }
 
     // If the same cell is chosen as destination
     if (x1 == x2 && y1 == y2) {
-      return state
+      return state.board
     }
 
     if (!validMove(state.board, (x1, y1), (x2, y2),color)) {
-      return state
+      return state.board
     }
 
     val newBoard = addMove((x1, y1), (x2, y2), state.board)
-    GameState(!state.player, newBoard)
+    newBoard
   }
 
   def addMove(from: (Int, Int), to: (Int, Int), board: Array[Array[GamePiece]] ): Array[Array[GamePiece]] = {

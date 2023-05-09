@@ -55,21 +55,21 @@ package object connect4 {
 
   // Validates the user input according to the rules of the game
   // Applies the user action and modifies the board accordingly
-  def connect4Controller(state: GameState, move: List[String]): GameState = {
+  def connect4Controller(state: GameState, move: List[String]): Array[Array[GamePiece]] = {
     if (move.head.length != 1)
-      return state
+      return state.board
 
     val y: Int = move.head(0) - '1'
 
     val x = valid(5,y,state.board)
     if (!insideBoard(x, y, state.board) || state.board(x)(y) != null) {
-      return state
+      return state.board
     }
 
     val newBoard = addMove(x, y, state.board, state.player)
 
     //  true
-    GameState(!state.player, newBoard)
+    newBoard
   }
 
   def addMove(row: Int, col: Int, board: Array[Array[GamePiece]], player: Boolean): Array[Array[GamePiece]] = {

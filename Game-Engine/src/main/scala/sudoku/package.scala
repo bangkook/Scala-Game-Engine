@@ -66,9 +66,9 @@ package object sudoku {
 
   }
 
-  def sudokuController(state: GameState, move: List[String]): GameState = {
+  def sudokuController(state: GameState, move: List[String]): Array[Array[GamePiece]] = {
     if (move.head.length != 2 || move(1).length != 1)
-      return state
+      return state.board
 
     val x: Int = move.head(0) - '1'
     val y: Int = move.head(1) - 'a'
@@ -79,26 +79,26 @@ package object sudoku {
     //out of bound
     if (!insideBoard(x, y, state.board) ) {
       println("out of bound")
-      return state
+      return state.board
     }
 
     if(!delete ) {
       //breaks the rules
       if (!validAdd(state.board, x, y, z)) {
         println("invalid move")
-        return state
+        return state.board
       }else{
         val newBoard = addMove(x, y, z, state.board)
-        return GameState(state.player, newBoard)
+        newBoard
       }
 
     }else{// delete
       if(!validDelete(x,y,state.board)){
         println("can't delete this")
-        return state
+        return state.board
       }else{
         val newBoard = removeMove(x, y, state.board)
-        return GameState(state.player, newBoard)
+        newBoard
       }
     }
   }

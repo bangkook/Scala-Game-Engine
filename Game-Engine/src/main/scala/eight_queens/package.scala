@@ -44,9 +44,9 @@ package object eight_queens {
     stage.show()
   }
 
-  def queensController(state: GameState, move: List[String]): GameState = { //check the input // a01
+  def queensController(state: GameState, move: List[String]): Array[Array[GamePiece]] = { //check the input // a01
     if(move.head.length != 2)
-      return state
+      return state.board
 
     val size = state.board.length
     val to: Int = size - (move.head(0) - '1') - 2
@@ -55,20 +55,20 @@ package object eight_queens {
     // If out of bounds or cell is empty, return false
     if (!insideBoard(to, queen, state.board) ) {
       println(1)
-      return state
+      return state.board
     }
 
     if(state.board(to)(queen) != null){ //piece
       val newBoard = deleteMove((to, queen), state.board);
-      return GameState(!state.player, newBoard)
+      return newBoard
     }
 
     if (!validMove(state.board,  (to, queen))) {
       println(5)
-      return state
+      return state.board
     }
     val newBoard = addMove( (to, queen), state.board);
-    GameState(!state.player, newBoard)
+    newBoard
   }
 
   def deleteMove(to: (Int, Int), board: Array[Array[GamePiece]]): Array[Array[GamePiece]] = {

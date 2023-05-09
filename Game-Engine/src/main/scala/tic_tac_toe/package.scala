@@ -45,22 +45,22 @@ package object tic_tac_toe {
 
   // Validates the user input according to the rules of the game
   // Applies the user action and modifies the board accordingly
-  def XOController(state: GameState, move: List[String]): GameState = {
+  def XOController(state: GameState, move: List[String]): Array[Array[GamePiece]] = {
     if (move.head.length != 2)
-      return state
+      return state.board
 
     val x: Int = move.head(0) - '1'
     val y: Int = move.head(1) - 'a'
 
     if (!insideBoard(x, y, state.board) || state.board(x)(y) != null) {
-      return state
+      return state.board
     }
 
     // state.board = state.addMove(x, y, turn)
     val newBoard = addMove(x, y, state.board, state.player)
 
     //  true
-    GameState(!state.player, newBoard)
+    newBoard
   }
 
   // Apply the move on the board
