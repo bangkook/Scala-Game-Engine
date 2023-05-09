@@ -9,7 +9,7 @@ object Connect4Controller {
 
     val y: Int = move.head(0) - '1'
 
-    val x = valid(y,state.board)
+    val x = valid(5,y,state.board)
     if (!insideBoard(x, y, state.board) || state.board(x)(y) != null) {
       return state
     }
