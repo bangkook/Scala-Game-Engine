@@ -1,5 +1,6 @@
 import checkers.{CheckersController, CheckersDrawer}
 import chess.{ChessController, ChessDrawer}
+import connect4.{Connect4Controller, Connect4Drawer}
 import constants.Constants
 import game_engine.{GameEngine, GamePiece, GameState, initializeCheckers, initializeChess}
 import scalafx.Includes._
@@ -80,6 +81,8 @@ object InitialScreen extends JFXApp3 {
 
         connect4.onAction = (event: ActionEvent) => {
           println("Connect")
+          val gameState: GameState = GameState(player = true, Array.ofDim[GamePiece](6, 7))
+          gameEngine.play(Connect4Controller.control,Connect4Drawer.draw, Constants.tic_tac_toe, gameState, new Stage())
         }
 
         // Checkers

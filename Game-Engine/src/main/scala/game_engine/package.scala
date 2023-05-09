@@ -11,7 +11,7 @@ package object game_engine {
 
   // Check move is within bounds
   def insideBoard(x: Int, y: Int, board: Array[Array[GamePiece]]): Boolean = {
-    x >= 0 && x < board.length && y >= 0 && y < board.length
+    x >= 0 && x < board.length && y >= 0 && y < board(0).length
   }
 
   // Initialize chess board
