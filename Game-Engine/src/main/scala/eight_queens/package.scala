@@ -51,14 +51,14 @@ package object eight_queens {
     val size = state.board.length
     val to: Int = size - (move.head(0) - '1') - 2
     val queen: Int = move.head(1) - 'a'
-
+    println("to = "+to+ " , queen = "+ queen)
     // If out of bounds or cell is empty, return false
     if (!insideBoard(to, queen, state.board) ) {
       println(1)
       return state.board
     }
-
-    if(state.board(to)(queen) != null){ //piece
+    if(state.board(to)(queen) != null && to != 8){ //piece
+      println("hereee")
       val newBoard = deleteMove((to, queen), state.board);
       return newBoard
     }
@@ -93,6 +93,8 @@ package object eight_queens {
 
     val x2 = to._1
     val y2 = to._2
+    println("x2 = "+x2+ " , y2= "+ y2)
+    if(x2 == 0 && board(x2)(y2) != null) return false
     if(board(8)(y2) == null){
       return false
     }

@@ -154,7 +154,7 @@ package object chess {
   }
 
    def checkQueen(board: Array[Array[GamePiece]], x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {
-    checkRook(board, x1, y1, x2, y2) || checkBishop(board, x2, y1, x2, y2)
+    checkRook(board, x1, y1, x2, y2) || checkBishop(board, x1, y1, x2, y2)
   }
 
    def checkKing(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = {

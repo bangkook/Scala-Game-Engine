@@ -29,6 +29,7 @@ package object game_engine {
     turn.setFont(new Font(20))
     turn.setTextFill(Color.Brown)
 
+    // pattern matching
     val inputHandler: (List[TextField], List[Label]) = game match {
       case Constants.connect => oneInputHandler
       case Constants.queens => oneInputHandler
