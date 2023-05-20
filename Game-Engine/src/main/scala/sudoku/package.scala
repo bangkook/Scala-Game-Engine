@@ -1,4 +1,5 @@
-import game_engine.{GameState,GamePiece}
+import game_engine.{GamePiece, GameState}
+import org.jpl7.Query
 import utility.{getImage, insideBoard}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -77,9 +78,39 @@ package object sudoku {
 
 
     //out of bound
-    if (!insideBoard(x, y, state.board) ) {
+    if (!insideBoard(x, y, state.board) && x != -1 && y != -49 && z != 0) {
+      println("x = " +x+ "y = "+y+"z = "+z)
       println("out of bound")
       return state.board
+    }
+    if(x == -1 && y == -49 && z == 0){
+      val q = new Query("consult('D:/Second Year Computer/Term 2/Paradigms/Project/Scala/Game-Engine/Sudoko.pl')")
+      if(q.hasSolution){
+        var arr ="[["
+        for (i <- 0 until 9) {
+          for (j <- 0 until 9) {
+            arr += state.board(i)(j).name
+            if(j != 8) arr +=","
+            else if(i == 8) arr+= "]"
+            else arr+= "],["
+          }
+        }
+        arr+= "]"
+        println("arr = "+arr)
+        var s = "Array = " + arr + ",solve(Array, ConvertedArray)."
+        println("Query = " + s)
+
+        val q2 = new Query(s)
+        if(q2.hasSolution){
+          println("succeeded")
+          val qsValue = q2.oneSolution().get("ConvertedArray").toString
+          println("qsValue = " +qsValue)
+          // TODO : Return the newBoard with the values in qsValue
+          //      newBoard
+        }
+      }else{
+        println("failed")
+      }
     }
 
     if(!delete ) {
@@ -88,11 +119,13 @@ package object sudoku {
         println("invalid move")
         return state.board
       }else{
+//        println("I am here")
         val newBoard = addMove(x, y, z, state.board)
         newBoard
       }
 
     }else{// delete
+//      println("I am here")
       if(!validDelete(x,y,state.board)){
         println("can't delete this")
         return state.board
@@ -104,6 +137,8 @@ package object sudoku {
   }
 
   def validAdd(board: Array[Array[GamePiece]], x:Int, y:Int, z:Int): Boolean = {
+    println("x = " +x+ "y = "+y+"z = "+z)
+//    if(x == 0 && y == 0 && z == )
     if (!(z >= 1 && z <= 9)) {
       println("z out of bound")
       return false
@@ -139,6 +174,7 @@ package object sudoku {
   }
 
   def validDelete(x: Int, y: Int,board: Array[Array[GamePiece]]): Boolean = {
+//    println("EEEEEEEE")
     board(x)(y).color != "init"
   }
 
