@@ -3,7 +3,8 @@ import org.jpl7.Query
 import utility.{getImage, insideBoard}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
-import scalafx.scene.control.Label
+import scalafx.scene.control.Alert.AlertType
+import scalafx.scene.control.{Alert, Label}
 import scalafx.scene.layout.{Background, BackgroundFill, GridPane, StackPane}
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color.LightGreen
@@ -124,7 +125,10 @@ package object sudoku {
           )
           return nBoard
         }else{
-          println("failed")
+          println("Unsolvable")
+          val alert = new Alert(AlertType.Error)
+          alert.setContentText("Unsolvable")
+          alert.show()
           return state.board
         }
 
