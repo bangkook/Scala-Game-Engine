@@ -107,9 +107,22 @@ package object sudoku {
           println("qsValue = " +qsValue)
           // TODO : Return the newBoard with the values in qsValue
           //      newBoard
+          var c=0
+          val nBoard: Array[Array[GamePiece]] = Array.tabulate(state.board.length, state.board.length)((x, y) => {
+            c=c+1
+            while (qsValue(c) - '0' > 9 || qsValue(c) - '0' < 1) {
+              c = c + 1
+            }
+            GamePiece(qsValue(c).toString, state.board(x)(y).color)
+
+          }
+          )
+          return nBoard
         }
+
       }else{
         println("failed")
+        return state.board
       }
     }
 
