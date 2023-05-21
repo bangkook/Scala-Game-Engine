@@ -52,7 +52,12 @@ package object sudoku {
     for (x <- 0 until board.size) {
       for (y <- 0 until board.size) {
         val num: String = if (board(x)(y).name == "0") " " else board(x)(y).name
+
         val l:Label=new Label("  "+ num)
+
+        if(board(x)(y).color == "free"){
+          l.style = "-fx-text-fill: #0000ff;"
+        }
         l.setFont(new Font(25))
         grid.add(l,y+1,x+1)
       }
@@ -118,6 +123,9 @@ package object sudoku {
           }
           )
           return nBoard
+        }else{
+          println("failed")
+          return state.board
         }
 
       }else{
