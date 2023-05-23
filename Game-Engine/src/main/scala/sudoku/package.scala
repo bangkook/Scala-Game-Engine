@@ -57,7 +57,7 @@ package object sudoku {
         val l:Label=new Label("  "+ num)
 
         if(board(x)(y).color == "free"){
-          l.style = "-fx-text-fill: #0000ff;"
+          l.style = "-fx-text-fill: #0000ff;" // color the new user inputs in blue
         }
         l.setFont(new Font(25))
         grid.add(l,y+1,x+1)
@@ -103,7 +103,7 @@ package object sudoku {
         }
         arr+= "]"
         println("arr = "+arr)
-        var s = "Array = " + arr + ",solve(Array, ConvertedArray)."
+        val s = "Array = " + arr + ",solve(Array, ConvertedArray)."
         println("Query = " + s)
 
         val q2 = new Query(s)
@@ -111,8 +111,7 @@ package object sudoku {
           println("succeeded")
           val qsValue = q2.oneSolution().get("ConvertedArray").toString
           println("qsValue = " +qsValue)
-          // TODO : Return the newBoard with the values in qsValue
-          //      newBoard
+          // to return the new board
           var c=0
           val nBoard: Array[Array[GamePiece]] = Array.tabulate(state.board.length, state.board.length)((x, y) => {
             c=c+1
@@ -120,9 +119,7 @@ package object sudoku {
               c = c + 1
             }
             GamePiece(qsValue(c).toString, state.board(x)(y).color)
-
-          }
-          )
+          })
           return nBoard
         }else{
           println("Unsolvable")
@@ -199,7 +196,6 @@ package object sudoku {
   }
 
   def validDelete(x: Int, y: Int,board: Array[Array[GamePiece]]): Boolean = {
-//    println("EEEEEEEE")
     board(x)(y).color != "init"
   }
 
